@@ -53,7 +53,13 @@ This command will execute the TypeScript compiler (`tsc`) to compile your TypeSc
 To lint your code and ensure code quality, you can run the following command:
 
 ```bash
-npm run lint
+npm run prettier
 ```
 
-This command will use the `eslint` linter to analyze your TypeScript and TypeScript React files in the `src` folder. It will report any linting issues and enforce coding standards.
+This command will use the `prettier` linter to analyze your TypeScript and TypeScript React files in the `src` folder. It will report any linting issues and enforce coding standards.
+
+You can also run the following command to automatically fix formatting issues:
+
+```bash
+npm run prettier:fix
+```
