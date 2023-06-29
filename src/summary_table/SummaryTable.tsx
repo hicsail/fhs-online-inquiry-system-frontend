@@ -38,7 +38,7 @@ const SummaryTable = (props: any) => {
   };
 
   const sortedRows = useMemo(() => rows.sort(getComparator(order, orderBy)), [order, orderBy]);
-
+  const alignment = (value: number | string) => (typeof value === 'number' ? 'right' : 'left');
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', elevation: 2 }}>
@@ -48,27 +48,23 @@ const SummaryTable = (props: any) => {
             <TableBody>
               {sortedRows.map((row, index) => {
                 const labelId = `SortableTable-${index}`;
-
+                // We can dynamically create all the cells except for the id cell
+                const cells = Object.entries(row)
+                  .slice(1)
+                  .map((keypair: [string, keyof Data]) => {
+                    return (
+                      <TableCell key={index + keypair[0]} align={alignment(keypair[1])}>
+                        {keypair[1]}
+                      </TableCell>
+                    );
+                  });
                 return (
                   <TableRow key={row.type}>
                     <TableCell padding="normal" />
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       {row.type}
                     </TableCell>
-                    <TableCell align="right">{row.total}</TableCell>
-                    <TableCell align="right">{row.average_age_at_death}</TableCell>
-                    <TableCell align="right">{row.hs_grad}</TableCell>
-                    <TableCell align="right">{row.college_grad}</TableCell>
-                    <TableCell align="right">{row.mri_1}</TableCell>
-                    <TableCell align="right">{row.mri_2}</TableCell>
-                    <TableCell align="right">{row.mri_3}</TableCell>
-                    <TableCell align="right">{row.dvoice_1}</TableCell>
-                    <TableCell align="right">{row.dvoice_2}</TableCell>
-                    <TableCell align="right">{row.dvoice_3}</TableCell>
-                    <TableCell align="right">{row.smoking_ever}</TableCell>
-                    <TableCell align="right">{row.overall_dementia_probe}</TableCell>
-                    <TableCell align="right">{row.hypertension_ever}</TableCell>
-                    <TableCell align="right">{row.diabetic_ever}</TableCell>
+                    {cells}
                   </TableRow>
                 );
               })}

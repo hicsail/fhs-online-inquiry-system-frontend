@@ -13,7 +13,7 @@ const headerCells: readonly HeaderCell[] = [
     numeric: false,
     id: 'type',
     label: 'type',
-    width: '20%'
+    width: '0%'
   },
   {
     disablePadding: true,
