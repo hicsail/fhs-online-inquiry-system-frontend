@@ -40,7 +40,6 @@ const SummaryTable = (props: any) => {
   const sortedRows = useMemo(() => rows.sort(getComparator(order, orderBy)), [order, orderBy]);
   const alignment = (value: number | string) => (typeof value === 'number' ? 'right' : 'left');
   return (
-    <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', elevation: 2 }}>
         <TableContainer sx={{ width: '100%' }}>
           <Table sx={{}} aria-labelledby="SummaryTable" size={'medium'}>
@@ -78,7 +77,6 @@ const SummaryTable = (props: any) => {
           </Table>
         </TableContainer>
       </Paper>
-    </Box>
   );
 };
 
