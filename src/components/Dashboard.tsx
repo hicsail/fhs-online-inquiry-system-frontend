@@ -15,7 +15,7 @@ export const Dashboard: FC = () => {
     <Box sx={{ display: 'flex' }}>
       <AppBar component="nav" color="default" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <IconButton onClick={handleDrawerOpen}>
+          <IconButton size="large" edge="start" color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div">
@@ -23,15 +23,17 @@ export const Dashboard: FC = () => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Drawer variant="temporary" anchor="left" open={open} onClose={handleDrawerClose}>
+      <Drawer anchor="left" open={open} onClose={handleDrawerClose}>
         <Toolbar />
-        <List>
-          {datasets.map((dataset) => (
-            <ListItem key={dataset.name} disablePadding>
-              <ListItemButton>{dataset.displayedName}</ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+        <Box sx={{ width: 'auto' }} onClick={handleDrawerClose}>
+          <List>
+            {datasets.map((dataset) => (
+              <ListItem key={dataset.name} disablePadding>
+                <ListItemButton>{dataset.displayedName}</ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
       </Drawer>
     </Box>
   );
