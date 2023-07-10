@@ -13,7 +13,7 @@ export function RootLayout() {
   ];
 
   // handlers for sidebar
-  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerOpen = () => setOpen(!open);
   const handleDrawerClose = () => setOpen(false);
 
   return (
