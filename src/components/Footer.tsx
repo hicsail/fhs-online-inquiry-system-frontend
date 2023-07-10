@@ -2,7 +2,6 @@ import { Box, Container, Grid, Link, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import { FC } from 'react';
 import fhslogo from '../assets/fhs-logo.svg';
 
@@ -19,14 +18,20 @@ export const Footer: FC = () => {
       <Container maxWidth="lg">
         <Grid container>
           <Grid item>
-            <img src={fhslogo} alt="FHS logo" style={{ width: '55px', marginRight: '10px', shapeRendering: 'geometricPrecision' }} />
+            <Link href="https://www.framinghamheartstudy.org/">
+              <img src={fhslogo} alt="FHS logo" style={{ width: '55px', marginRight: '10px', shapeRendering: 'geometricPrecision' }} />
+            </Link>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h5" textAlign="left" fontWeight={600} fontFamily="serif">
-              Framingham Heart Study
+              <Link color="inherit" underline="none" href="https://www.framinghamheartstudy.org/" sx={{ '&:hover': { color: 'inherit' } }}>
+                Framingham Heart Study
+              </Link>
             </Typography>
             <Typography variant="subtitle2" textAlign="left" fontFamily="serif">
-              Three Generations of Dedication
+              <Link color="inherit" underline="none" href="https://www.framinghamheartstudy.org/" sx={{ '&:hover': { color: 'inherit' } }}>
+                Three Generations of Dedication
+              </Link>
             </Typography>
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -54,13 +59,13 @@ export const Footer: FC = () => {
               Contact Us
             </Typography>
             <Typography variant="body2" textAlign="left" gutterBottom>
-              <Link href="#" color="inherit" underline="none">
-                Phone
+              <Link href="tel:508-935-3450" color="inherit" underline="none">
+                Phone: 508-935-3450
               </Link>
             </Typography>
             <Typography variant="body2" textAlign="left" gutterBottom>
-              <Link href="#" color="inherit" underline="none">
-                Email
+              <Link href="mailto:fhs@bu.edu" color="inherit" underline="none">
+                Email: fhs@bu.edu
               </Link>
             </Typography>
             <Typography variant="body2" textAlign="left" gutterBottom>
@@ -79,14 +84,11 @@ export const Footer: FC = () => {
               Social
             </Typography>
             <Grid container justifyContent="flex-start">
-              <IconButton aria-label="facebook">
+              <IconButton aria-label="facebook" href="https://www.facebook.com/framinghamheartstudy/">
                 <FacebookIcon />
               </IconButton>
-              <IconButton aria-label="twitter">
+              <IconButton aria-label="twitter" href="https://twitter.com/framinghamstudy/">
                 <TwitterIcon />
-              </IconButton>
-              <IconButton aria-label="instagram">
-                <InstagramIcon />
               </IconButton>
             </Grid>
           </Grid>
