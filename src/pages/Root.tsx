@@ -23,9 +23,11 @@ export function RootLayout() {
           <IconButton size="large" edge="start" color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div">
-            Brain Aging Program Data
-          </Typography>
+          <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Typography variant="h6" component="div">
+              Brain Aging Program Data
+            </Typography>
+          </NavLink>
         </Toolbar>
       </AppBar>
       <Drawer anchor="left" open={open} onClose={handleDrawerClose}>
