@@ -6,7 +6,7 @@ function valuetext(value: number) {
   return `${value}°C`;
 }
 
-const minDistance = 10;
+const minDistance = 0;
 
 export default function MinimumDistanceSlider() {
   const [value1, setValue1] = React.useState<number[]>([20, 37]);
@@ -51,6 +51,16 @@ export default function MinimumDistanceSlider() {
     }
   };
 
+const marks = [
+  {
+    value: 0,
+    label: '0',
+  },
+  {
+    value: 100,
+    label: '100',
+  },
+];
   return (
     <Box sx={{ width: 300 }}>
       <Slider
@@ -59,16 +69,18 @@ export default function MinimumDistanceSlider() {
         onChange={handleChange1}
         valueLabelDisplay="auto"
         getAriaValueText={valuetext}
+        marks={marks}
+        valueLabelDisplay="on"
         disableSwap
       />
-      <Slider
+{/*      <Slider
         getAriaLabel={() => 'Minimum distance shift'}
         value={value2}
         onChange={handleChange2}
         valueLabelDisplay="auto"
         getAriaValueText={valuetext}
         disableSwap
-      />
+      />*/}
     </Box>
   );
 }
