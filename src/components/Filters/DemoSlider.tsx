@@ -1,45 +1,30 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
-
-function valuetext(value: number) {
-  return `${value}°C`;
-}
+import { FC, useState } from 'react';
 
 const minDistance = 0;
 
-export default function MinimumDistanceSlider() {
-  const [value1, setValue1] = React.useState<number[]>([20, 37]);
+interface DemoSliderProps {
+  filterName: string;
+  filterDisplayedName: string;
+  variableName: string;
+  maxValue: number;
+  minValue: number;
+  minDistance?: number;
+}
 
-  const handleChange1 = (event: Event, newValue: number | number[], activeThumb: number) => {
+export const DemoSlider: FC<DemoSliderProps> = (props) => {
+  const [value, setValue] = useState<number[]>([props.minValue, props.maxValue]);
+
+  const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
     if (!Array.isArray(newValue)) {
       return;
     }
 
     if (activeThumb === 0) {
-      setValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]]);
+      setValue([Math.min(newValue[0], value[1] - minDistance), value[1]]);
     } else {
-      setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
-    }
-  };
-
-  const [value2, setValue2] = React.useState<number[]>([20, 37]);
-
-  const handleChange2 = (event: Event, newValue: number | number[], activeThumb: number) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
-
-    if (newValue[1] - newValue[0] < minDistance) {
-      if (activeThumb === 0) {
-        const clamped = Math.min(newValue[0], 100 - minDistance);
-        setValue2([clamped, clamped + minDistance]);
-      } else {
-        const clamped = Math.max(newValue[1], minDistance);
-        setValue2([clamped - minDistance, clamped]);
-      }
-    } else {
-      setValue2(newValue as number[]);
+      setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
     }
   };
 
@@ -55,7 +40,7 @@ export default function MinimumDistanceSlider() {
   ];
   return (
     <Box sx={{ width: 300 }}>
-      <Slider getAriaLabel={() => 'Minimum distance'} value={value1} onChange={handleChange1} valueLabelDisplay="auto" getAriaValueText={valuetext} marks={marks} disableSwap />
+      <Slider value={value} onChange={handleChange} marks={marks} min={props.minValue} max={props.maxValue} valueLabelDisplay="auto" disableSwap />
     </Box>
   );
-}
+};
