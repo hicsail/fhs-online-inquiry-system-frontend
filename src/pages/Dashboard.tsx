@@ -1,8 +1,8 @@
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { FC } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
-import AutoTextBox from '../autocomplete/AutoTextBox';
+import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
 
 export const DashboardPage: FC = () => {
   const data = useLoaderData();
@@ -12,11 +12,15 @@ export const DashboardPage: FC = () => {
 
   return (
     <Box width="calc(100vw - 4rem)" display="flex">
-      <Box width="70%">
+      <Box width="80%">
         <SummaryTable />
+        <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
+          <Button variant="contained">Apply</Button>
+        </Box>
       </Box>
-      <Box width="30%" paddingRight="2%" paddingLeft="2%">Filters
-        <AutoTextBox/>
+      <Box width="20%" paddingLeft="2rem">
+        <TableSliderFilter filterName="age_core1" filterDisplayedName="Demographics" variableName="Age Range" maxValue={100} minValue={0} />
+        <TableSliderFilter filterName="bmi" filterDisplayedName="Anthropometric" variableName="BMI Range" maxValue={100} minValue={0} />
       </Box>
     </Box>
   );

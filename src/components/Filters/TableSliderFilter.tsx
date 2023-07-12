@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 
 const minDistance = 0;
 
-interface DemoSliderProps {
+interface TableSliderFilterProps {
   filterName: string;
   filterDisplayedName: string;
   variableName: string;
@@ -13,7 +13,7 @@ interface DemoSliderProps {
   minDistance?: number;
 }
 
-export const DemoSlider: FC<DemoSliderProps> = (props) => {
+export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
   const [value, setValue] = useState<number[]>([props.minValue, props.maxValue]);
 
   const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
