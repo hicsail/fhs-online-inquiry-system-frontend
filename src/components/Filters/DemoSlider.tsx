@@ -11,11 +11,7 @@ const minDistance = 0;
 export default function MinimumDistanceSlider() {
   const [value1, setValue1] = React.useState<number[]>([20, 37]);
 
-  const handleChange1 = (
-    event: Event,
-    newValue: number | number[],
-    activeThumb: number,
-  ) => {
+  const handleChange1 = (event: Event, newValue: number | number[], activeThumb: number) => {
     if (!Array.isArray(newValue)) {
       return;
     }
@@ -29,11 +25,7 @@ export default function MinimumDistanceSlider() {
 
   const [value2, setValue2] = React.useState<number[]>([20, 37]);
 
-  const handleChange2 = (
-    event: Event,
-    newValue: number | number[],
-    activeThumb: number,
-  ) => {
+  const handleChange2 = (event: Event, newValue: number | number[], activeThumb: number) => {
     if (!Array.isArray(newValue)) {
       return;
     }
@@ -51,36 +43,19 @@ export default function MinimumDistanceSlider() {
     }
   };
 
-const marks = [
-  {
-    value: 0,
-    label: '0',
-  },
-  {
-    value: 100,
-    label: '100',
-  },
-];
+  const marks = [
+    {
+      value: 0,
+      label: '0'
+    },
+    {
+      value: 100,
+      label: '100'
+    }
+  ];
   return (
     <Box sx={{ width: 300 }}>
-      <Slider
-        getAriaLabel={() => 'Minimum distance'}
-        value={value1}
-        onChange={handleChange1}
-        valueLabelDisplay="auto"
-        getAriaValueText={valuetext}
-        marks={marks}
-        valueLabelDisplay="on"
-        disableSwap
-      />
-{/*      <Slider
-        getAriaLabel={() => 'Minimum distance shift'}
-        value={value2}
-        onChange={handleChange2}
-        valueLabelDisplay="auto"
-        getAriaValueText={valuetext}
-        disableSwap
-      />*/}
+      <Slider getAriaLabel={() => 'Minimum distance'} value={value1} onChange={handleChange1} valueLabelDisplay="auto" getAriaValueText={valuetext} marks={marks} disableSwap />
     </Box>
   );
 }
