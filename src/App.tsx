@@ -3,10 +3,6 @@ import { DashboardPage, loader as datasetLoader } from './pages/Dashboard';
 import { RootLayout } from './pages/Root';
 import { HomePage } from './pages/Home';
 import './App.css';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
-import { StyledEngineProvider } from '@mui/material/styles';
-import DemoSlider from './DemoSlider';
 
 const router = createBrowserRouter([
   {
