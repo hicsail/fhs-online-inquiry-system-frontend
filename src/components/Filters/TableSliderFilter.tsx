@@ -1,20 +1,19 @@
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
+import { Slider, Box, Typography } from '@mui/material';
 import { FC, useState } from 'react';
-
-const minDistance = 0;
 
 interface TableSliderFilterProps {
   filterName: string;
-  filterDisplayedName: string;
   variableName: string;
   maxValue: number;
   minValue: number;
   minDistance?: number;
+  disabled?: boolean;
 }
 
 export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
   const [value, setValue] = useState<number[]>([props.minValue, props.maxValue]);
+
+  const minDistance = props.minDistance ?? 10;
 
   const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
     if (!Array.isArray(newValue)) {
@@ -30,17 +29,21 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
 
   const marks = [
     {
-      value: 0,
-      label: '0'
+      value: props.minValue,
+      label: props.minValue.toString()
     },
     {
-      value: 100,
-      label: '100'
+      value: props.maxValue,
+      label: props.maxValue.toString()
     }
   ];
+
   return (
-    <Box sx={{ width: 300 }}>
-      <Slider value={value} onChange={handleChange} marks={marks} min={props.minValue} max={props.maxValue} valueLabelDisplay="auto" disableSwap />
+    <Box>
+      <Typography textAlign="start" variant="body2">
+        {props.variableName}
+      </Typography>
+      <Slider disabled={props.disabled} value={value} onChange={handleChange} marks={marks} min={props.minValue} max={props.maxValue} valueLabelDisplay="auto" disableSwap />
     </Box>
   );
 };
