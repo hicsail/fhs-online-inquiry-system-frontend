@@ -5,6 +5,7 @@ import { Paper, Button, Box, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const SelectedConditionBox = (props: any) => {
+  // Container for selected conditions
   const { deselectCondition } = props;
   return (
     <Box
@@ -12,7 +13,7 @@ const SelectedConditionBox = (props: any) => {
         m: '.5em',
         borderColor: 'primary.main',
         borderStyle: 'solid',
-        borderWidth:'2px'
+        borderWidth: '2px'
       }}
     >
       {props.children}
@@ -25,9 +26,12 @@ const SelectedConditionBox = (props: any) => {
 
 const AutoTextBox = () => {
   const [value, setValue] = React.useState<string | null>(brainConditions[0]);
+  // value changes if inputValue is matched with list of brainConditions
   const [inputValue, setInputValue] = React.useState<string | null>('');
+  // value of text within box - doesn't need to match
 
   const [selectedConditions, setSelectedConditions] = React.useState<Set<string | null>>(new Set<string | null>());
+  // This state will probably have to be raised for making calls to API
 
   const renderSelectedConditions = (conditions: Set<string | null>) => {
     return Array.from(conditions).map((condition: string | null) => {
