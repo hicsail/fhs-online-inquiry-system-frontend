@@ -15,12 +15,32 @@ type Order = 'asc' | 'desc';
 
 interface SummaryTableProps {
   name: string;
-  data: Data[];
+  data: any;
 }
 
 export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) => {
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<keyof Data>('type');
+
+  const data: Data = props.data.map((row: any) => {
+    return {
+      type: row.type,
+      total: row.total,
+      average_age_at_death: row.average_age_at_death,
+      hs_grad: row.hs_grad,
+      college_grad: row.college_grad,
+      mri_1: row.mri_1,
+      mri_2: row.mri_2,
+      mri_3: row.mri_3,
+      dvoice_1: row.dvoice_1,
+      dvoice_2: row.dvoice_2,
+      dvoice_3: row.dvoice_3,
+      smoking_ever: row.smoking_ever,
+      overall_dementia_probe: row.overall_dementia_probe,
+      hypertension_ever: row.hypertension_ever,
+      diabetic_ever: row.diabetic_ever
+    };
+  });
 
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -28,7 +48,7 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
     setOrderBy(property);
   };
 
-  const sortedRows = useMemo(() => props.data.sort(getComparator(order, orderBy)), [order, orderBy]);
+  const sortedRows = useMemo(() => data.sort(getComparator(order, orderBy)), [order, orderBy, data]);
 
   return (
     <Paper sx={{ paddingX: 1, paddingY: '1rem' }}>

@@ -9,6 +9,7 @@ interface TableSliderFilterProps {
   step?: number;
   minDistance?: number;
   disabled?: boolean;
+  applyFilter: (name: string, removeFilter: boolean, value: any) => void;
 }
 
 export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
@@ -27,6 +28,8 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
     } else {
       setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
     }
+
+    props.applyFilter(props.filterName, false, value);
   };
 
   const marks = [

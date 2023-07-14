@@ -1,11 +1,10 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Switch, Typography } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
 import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
 import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 import axios from 'axios';
-import { Data } from '../components/SummaryTable/data';
 
 type Filter = {
   name: string;
@@ -20,26 +19,9 @@ type Filter = {
 };
 
 export const DashboardPage: FC = () => {
-  const responseData = useLoaderData();
-  const data = responseData.data.map((row: any) => {
-    return {
-      type: row.type,
-      total: row.total,
-      average_age_at_death: row.average_age_at_death,
-      hs_grad: row.hs_grad,
-      college_grad: row.college_grad,
-      mri_1: row.mri_1,
-      mri_2: row.mri_2,
-      mri_3: row.mri_3,
-      dvoice_1: row.dvoice_1,
-      dvoice_2: row.dvoice_2,
-      dvoice_3: row.dvoice_3,
-      smoking_ever: row.smoking_ever,
-      overall_dementia_probe: row.overall_dementia_probe,
-      hypertension_ever: row.hypertension_ever,
-      diabetic_ever: row.diabetic_ever
-    };
-  });
+  const [data, setData] = useState(useLoaderData());
+
+  const [filter, setFilter] = useState({});
 
   // demographic filter states
   const [demoExpand, setDemoExpand] = useState(false);
@@ -53,6 +35,22 @@ export const DashboardPage: FC = () => {
 
   // unique filter states
   const [expand, setExpand] = useState(false);
+
+  const changeFilter = (name: string, removeFilter: boolean, value: any) => {
+    if (removeFilter) {
+      setFilter((prevState) => {
+        const newState = { ...prevState };
+        delete newState[name];
+        return newState;
+      });
+    } else {
+      setFilter((prevState) => {
+        const newState = { ...prevState };
+        newState[name] = value;
+        return newState;
+      });
+    }
+  };
 
   const filters: Filter[] = [
     { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', max: 160, min: 0 },
@@ -88,12 +86,21 @@ export const DashboardPage: FC = () => {
     }
   };
 
+  const handleApplyFilters = async () => {
+    console.log(filter);
+    const response = await axios.post('http://localhost:3000/brain-data', filter);
+
+    setData(response.data);
+  };
+
   return (
     <Box width="calc(100vw - 4rem)" display="flex">
       <Box width="80%">
         <SummaryTable name="Brain Tissue Analytics" data={data} />
         <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
-          <Button variant="contained">Apply</Button>
+          <Button variant="contained" onClick={handleApplyFilters}>
+            Apply
+          </Button>
         </Box>
       </Box>
       <Box width="20%" paddingLeft="2rem">
@@ -103,7 +110,7 @@ export const DashboardPage: FC = () => {
             <Switch checked={demoChecked} onClick={handleDemoExpand} sx={{ position: 'absolute', right: 10 }} />
           </AccordionSummary>
           <AccordionDetails>
-            <TableSliderFilter filterName="age_core1" variableName="Age Range" maxValue={100} minValue={0} disabled={demoDisabled} />
+            <TableSliderFilter filterName="age_core1" variableName="Age Range" maxValue={100} minValue={0} disabled={demoDisabled} applyFilter={changeFilter} />
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={anthroExpand} onChange={handleAnthroExpand}>
@@ -112,7 +119,7 @@ export const DashboardPage: FC = () => {
             <Switch checked={anthroChecked} onClick={handleAnthroExpand} sx={{ position: 'absolute', right: 10 }} />
           </AccordionSummary>
           <AccordionDetails>
-            <TableSliderFilter filterName="bmi" variableName="BMI Range" maxValue={100} minValue={0} disabled={anthroDisabled} />
+            <TableSliderFilter filterName="bmi" variableName="BMI Range" maxValue={100} minValue={0} disabled={anthroDisabled} applyFilter={changeFilter} />
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expand} onChange={handleExpand}>
@@ -130,9 +137,17 @@ export const DashboardPage: FC = () => {
                   minValue={filter.min!}
                   minDistance={filter.minDistance}
                   step={filter.step}
+                  applyFilter={changeFilter}
                 />
               ) : (
-                <TableOptionFilter key={filter.name} filterName={filter.name} variableName={filter.variableName} optionType={filter.optionType!} options={filter.options!} />
+                <TableOptionFilter
+                  key={filter.name}
+                  filterName={filter.name}
+                  variableName={filter.variableName}
+                  optionType={filter.optionType!}
+                  options={filter.options!}
+                  applyFilter={changeFilter}
+                />
               )
             )}
           </AccordionDetails>
@@ -143,11 +158,7 @@ export const DashboardPage: FC = () => {
 };
 
 export async function loader() {
-  const response = await axios.get('http://localhost:3000/brain-data');
+  const response = await axios.post('http://localhost:3000/brain-data');
 
-  if (response.status !== 200) {
-    throw new Error('Failed to load data');
-  } else {
-    return response;
-  }
+  return response.data;
 }
