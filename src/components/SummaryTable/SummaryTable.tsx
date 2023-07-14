@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 
 import { SortableTableHeader } from './SortableTableHeader';
 import { headerCells, Data } from './data';
+import { Typography } from '@mui/material';
 
 type Order = 'asc' | 'desc';
 
@@ -28,34 +29,26 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
   };
 
   const sortedRows = useMemo(() => props.data.sort(getComparator(order, orderBy)), [order, orderBy]);
-  const alignment = (value: number | string) => (typeof value === 'number' ? 'right' : 'left');
+
   return (
-    <Paper sx={{ width: '100%', elevation: 2 }}>
-      <TableContainer sx={{ width: '100%' }}>
-        <Table aria-labelledby="SummaryTable" size={'medium'}>
+    <Paper sx={{ paddingX: 1, paddingY: '1rem' }}>
+      <Typography variant="h6" textAlign="left" gutterBottom>
+        {props.name}
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table>
           <SortableTableHeader order={order} orderBy={orderBy} onRequestSort={handleRequestSort} headerCells={headerCells} />
           <TableBody>
             {sortedRows.map((row, index) => {
-              const labelId = `SortableTable-${index}`;
               // We can dynamically create all the cells except for the id cell
-              const cells = Object.entries(row)
-                .slice(1)
-                .map((keypair: [string, keyof Data]) => {
-                  return (
-                    <TableCell key={index + keypair[0]} align={alignment(keypair[1])}>
-                      {keypair[1]}
-                    </TableCell>
-                  );
-                });
-              return (
-                <TableRow key={row.type}>
-                  <TableCell padding="normal" />
-                  <TableCell component="th" id={labelId} scope="row" padding="none">
-                    {row.type}
+              const cells = Object.entries(row).map((keypair: [string, keyof Data]) => {
+                return (
+                  <TableCell key={index + keypair[0]} align="right">
+                    {keypair[1]}
                   </TableCell>
-                  {cells}
-                </TableRow>
-              );
+                );
+              });
+              return <TableRow key={row.type}>{cells}</TableRow>;
             })}
 
             <TableRow
