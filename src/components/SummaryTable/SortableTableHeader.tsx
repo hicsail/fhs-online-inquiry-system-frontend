@@ -7,10 +7,7 @@ import { visuallyHidden } from '@mui/utils';
 import { Data } from './SummaryTable';
 import { HeaderCell } from './data';
 
-
-
-
-function SortableTableHeader(props : any) {
+function SortableTableHeader(props: any) {
   const { order, orderBy, onRequestSort, headerCells } = props;
   const createSortHandler = (property: keyof Data) => () => {
     onRequestSort(property);
@@ -20,10 +17,10 @@ function SortableTableHeader(props : any) {
     <TableHead>
       <TableRow>
         <TableCell padding="normal"></TableCell>
-        {headerCells.map((headerCell : HeaderCell) => (
+        {headerCells.map((headerCell: HeaderCell) => (
           <TableCell
             key={headerCell.id}
-            sx={{width: headerCell.width}}
+            sx={{ width: headerCell.width }}
             align={headerCell.numeric ? 'right' : 'left'}
             padding={headerCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headerCell.id ? order : false}

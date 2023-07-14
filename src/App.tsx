@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { DashboardPage } from './pages/Dashboard';
+import { DashboardPage, loader as DatasetLoader } from './pages/Dashboard';
 import { RootLayout } from './pages/Root';
 import { HomePage } from './pages/Home';
 import './App.css';
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'datasets/:dataset', element: <DashboardPage /> }
+      { path: 'datasets/:dataset', element: <DashboardPage />, loader: DatasetLoader }
     ]
   }
 ]);
