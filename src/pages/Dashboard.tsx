@@ -2,6 +2,7 @@ import { Box } from '@mui/material';
 import { FC } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
+import AutoTextBox from '../autocomplete/AutoTextBox';
 
 export const DashboardPage: FC = () => {
   const data = useLoaderData();
@@ -14,7 +15,9 @@ export const DashboardPage: FC = () => {
       <Box width="70%">
         <SummaryTable />
       </Box>
-      <Box width="30%">Filters</Box>
+      <Box width="30%" paddingRight="2%" paddingLeft="2%">Filters
+        <AutoTextBox/>
+      </Box>
     </Box>
   );
 };
