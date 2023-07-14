@@ -44,7 +44,7 @@ export function RootLayout() {
           </List>
         </Box>
       </Drawer>
-      <main style={{ position: 'fixed', top: 0, left: 0, padding: '2rem' }}>
+      <main style={{ position: 'fixed', top: 0, left: 0, padding: '3rem' }}>
         <Toolbar />
         <Outlet />
       </main>
