@@ -1,3 +1,4 @@
+import { Box, FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
 import { FC } from 'react';
 
 interface TableOptionFilterProps {
@@ -10,5 +11,29 @@ interface TableOptionFilterProps {
 }
 
 export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
-  return <></>;
+  return (
+    <Box paddingX="1rem">
+      <Typography textAlign="start" variant="body2">
+        {props.variableName}
+      </Typography>
+      <FormControl fullWidth>
+        {props.optionType === 'select' && (
+          <Select>
+            {props.options.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+        {props.optionType === 'radio' && (
+          <RadioGroup>
+            {props.options.map((option) => (
+              <FormControlLabel key={option} value={option} control={<Radio />} label={option} />
+            ))}
+          </RadioGroup>
+        )}
+      </FormControl>
+    </Box>
+  );
 };
