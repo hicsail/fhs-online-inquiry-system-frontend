@@ -1,16 +1,30 @@
-import { Box, FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, Typography } from '@mui/material';
-import { FC } from 'react';
+import { Box, FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { FC, useState } from 'react';
 
 interface TableOptionFilterProps {
   filterName: string;
   variableName: string;
-  optionType: 'checkbox' | 'radio' | 'select';
+  optionType: 'radio' | 'select';
   options: string[];
   disabled?: boolean;
-  applyFilter: (name: string, removeFilter: boolean, value: any) => void;
+  npCatagory: boolean;
+  applyFilter: (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => void;
 }
 
 export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
+  const [, setSelectValue] = useState<number>();
+  const [, setRadioValue] = useState<number>();
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    setSelectValue(Number(event.target.value));
+    props.applyFilter(props.filterName, event.target.value, false, props.npCatagory);
+  };
+
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRadioValue(Number(event.target.value));
+    props.applyFilter(props.filterName, event.target.value, false, props.npCatagory);
+  };
+
   return (
     <Box paddingX="1rem">
       <Typography textAlign="start" variant="body2">
@@ -18,18 +32,18 @@ export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
       </Typography>
       <FormControl fullWidth>
         {props.optionType === 'select' && (
-          <Select>
-            {props.options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
+          <Select onChange={handleSelectChange}>
+            {Object.entries(props.options).map(([key, value]) => (
+              <MenuItem key={key} value={value}>
+                {key}
               </MenuItem>
             ))}
           </Select>
         )}
         {props.optionType === 'radio' && (
-          <RadioGroup>
-            {props.options.map((option) => (
-              <FormControlLabel key={option} value={option} control={<Radio />} label={option} />
+          <RadioGroup onChange={handleRadioChange}>
+            {Object.entries(props.options).map(([key, value]) => (
+              <FormControlLabel key={key} value={value} control={<Radio />} label={key} />
             ))}
           </RadioGroup>
         )}

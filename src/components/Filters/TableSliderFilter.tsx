@@ -9,7 +9,8 @@ interface TableSliderFilterProps {
   step?: number;
   minDistance?: number;
   disabled?: boolean;
-  applyFilter: (name: string, removeFilter: boolean, value: any) => void;
+  npCatagory: boolean;
+  applyFilter: (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => void;
 }
 
 export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
@@ -29,7 +30,7 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
       setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
     }
 
-    props.applyFilter(props.filterName, false, [value[0], value[1] + 1]);
+    props.applyFilter(props.filterName, [value[0], value[1] + 1], false, props.npCatagory);
   };
 
   const marks = [
@@ -38,16 +39,16 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
       label: props.minValue.toFixed()
     },
     {
-      value: props.maxValue + 1,
+      value: props.maxValue,
       label: props.maxValue.toString()
     }
   ];
 
   useEffect(() => {
     if (!props.disabled) {
-      props.applyFilter(props.filterName, false, [value[0], value[1] + 1]);
+      props.applyFilter(props.filterName, [value[0], value[1] + 1], false, props.npCatagory);
     } else {
-      props.applyFilter(props.filterName, true, null);
+      props.applyFilter(props.filterName, null, true, props.npCatagory);
     }
   }, [props.disabled]);
 

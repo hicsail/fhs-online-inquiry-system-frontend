@@ -23,18 +23,7 @@ import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
 import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
-
-type Filter = {
-  name: string;
-  variableName: string;
-  type: 'slider' | 'option';
-  max?: number;
-  min?: number;
-  step?: number;
-  minDistance?: number;
-  optionType?: 'checkbox' | 'radio' | 'select';
-  options?: string[];
-};
+import { Filter, brainDataFilters } from '../types/Filter';
 
 const categories = [
   'Postmortem Interval (Hours)',
@@ -53,26 +42,14 @@ const categories = [
   'Hippocampal Sclerosis'
 ];
 
-const brainDataFilters: Filter[] = [
-  { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', max: 160, min: 0 },
-  { name: 'age_death', variableName: 'Age of Death', type: 'slider', max: 100, min: 0 },
-  { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', max: 100, min: 0 },
-  { name: 'Frozen tissue present', variableName: 'Frozen tissue present', type: 'option', optionType: 'radio', options: ['Right', 'Left', 'NA'] },
-  { name: 'Fixative', variableName: 'Fixative', type: 'option', optionType: 'radio', options: ['Formalin', 'Paraformaldehyde', 'Other'] },
-  { name: 'Observed infarcts', variableName: 'Observed infarcts', type: 'option', optionType: 'radio', options: ['Yes', 'No'] },
-  { name: 'Chronic traumatic encephalopathy (CTE)', variableName: 'Chronic traumatic encephalopathy (CTE)', type: 'option', optionType: 'radio', options: ['Yes', 'No'] },
-  {
-    name: 'Atherosclerosis severity',
-    variableName: 'Atherosclerosis severity',
-    type: 'option',
-    optionType: 'select',
-    options: ['None', 'Mild', 'Moderate', 'Severe', 'Not Assessed', 'Missing/Unknown']
-  }
-];
+type FilterRequest = {
+  [key: string]: any;
+  categories?: { [key: string]: any };
+};
 
 export const DashboardPage: FC = () => {
   const [data, setData] = useState(useLoaderData());
-  const [filter, setFilter] = useState({});
+  const [filter, setFilter] = useState<FilterRequest>({});
   const [loading, setLoading] = useState(false);
 
   // demographic filter states
@@ -88,15 +65,29 @@ export const DashboardPage: FC = () => {
 
   const [filters, setFilters] = useState<Filter[]>([]);
 
-  const changeFilter = (name: string, removeFilter: boolean, value: any) => {
+  const changeFilter = (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => {
     if (removeFilter) {
       setFilter((prevState) => {
+        if (npCatagory && prevState.categories) {
+          const newCategories = prevState.categories;
+          delete newCategories![name];
+
+          return { ...prevState, categories: newCategories };
+        }
+
         const newState = { ...prevState };
         delete newState[name];
         return newState;
       });
     } else {
       setFilter((prevState) => {
+        if (npCatagory) {
+          const newCategories = prevState.categories ?? {};
+          newCategories[name] = [Number(value)];
+
+          return { ...prevState, categories: newCategories };
+        }
+
         const newState = { ...prevState };
         newState[name] = value;
         return newState;
@@ -122,8 +113,8 @@ export const DashboardPage: FC = () => {
     }
   };
 
-  const handleRemoveFilter = (name: string) => {
-    changeFilter(name, true, null);
+  const handleRemoveFilter = (name: string, npCatagory) => {
+    changeFilter(name, null, true, npCatagory);
     setFilters((prevState) => {
       const newState = prevState.filter((filter) => filter.name !== name);
       return newState;
@@ -173,7 +164,7 @@ export const DashboardPage: FC = () => {
             <Switch checked={demoChecked} onClick={handleDemoExpand} sx={{ position: 'absolute', right: 10 }} />
           </AccordionSummary>
           <AccordionDetails>
-            <TableSliderFilter filterName="age_core1" variableName="Age Range" maxValue={100} minValue={0} disabled={demoDisabled} applyFilter={changeFilter} />
+            <TableSliderFilter filterName="age_core1" variableName="Age Range" maxValue={100} minValue={0} disabled={demoDisabled} npCatagory={false} applyFilter={changeFilter} />
           </AccordionDetails>
         </Accordion>
         <Accordion expanded={expand} onChange={handleExpand}>
@@ -211,7 +202,7 @@ export const DashboardPage: FC = () => {
               <div key={filter.name}>
                 <Box>
                   <Box textAlign="end">
-                    <IconButton onClick={() => handleRemoveFilter(filter.name)} sx={{ height: '5px', width: '5px' }}>
+                    <IconButton onClick={() => handleRemoveFilter(filter.name, filter.npCategory)} sx={{ height: '5px', width: '5px' }}>
                       <CloseIcon sx={{ height: '15px', width: '15px' }} />
                     </IconButton>
                   </Box>
@@ -220,6 +211,7 @@ export const DashboardPage: FC = () => {
                     <TableSliderFilter
                       filterName={filter.name}
                       variableName={`${filter.variableName + (index < filters.length)}`}
+                      npCatagory={filter.npCategory}
                       maxValue={filter.max!}
                       minValue={filter.min!}
                       minDistance={filter.minDistance}
@@ -230,6 +222,7 @@ export const DashboardPage: FC = () => {
                     <TableOptionFilter
                       filterName={filter.name}
                       variableName={filter.variableName}
+                      npCatagory={filter.npCategory}
                       optionType={filter.optionType!}
                       options={filter.options!}
                       applyFilter={changeFilter}
