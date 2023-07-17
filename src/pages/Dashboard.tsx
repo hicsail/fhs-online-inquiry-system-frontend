@@ -113,7 +113,7 @@ export const DashboardPage: FC = () => {
     }
   };
 
-  const handleRemoveFilter = (name: string, npCatagory) => {
+  const handleRemoveFilter = (name: string, npCatagory: boolean) => {
     changeFilter(name, null, true, npCatagory);
     setFilters((prevState) => {
       const newState = prevState.filter((filter) => filter.name !== name);
@@ -123,7 +123,6 @@ export const DashboardPage: FC = () => {
 
   const handleApplyFilters = async () => {
     setLoading(true);
-    console.log(filter);
     const response = await axios.post('http://localhost:3002/brain-data', filter);
 
     setData(response.data);
