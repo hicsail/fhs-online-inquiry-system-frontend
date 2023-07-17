@@ -133,7 +133,7 @@ export const DashboardPage: FC = () => {
   const handleApplyFilters = async () => {
     setLoading(true);
     console.log(filter);
-    const response = await axios.post('http://localhost:3000/brain-data', filter);
+    const response = await axios.post('http://localhost:3002/brain-data', filter);
 
     setData(response.data);
     setLoading(false);
@@ -247,7 +247,7 @@ export const DashboardPage: FC = () => {
 };
 
 export async function loader() {
-  const response = await axios.post('http://localhost:3000/brain-data');
+  const response = await axios.post('http://localhost:3002/brain-data');
 
   return response.data;
 }

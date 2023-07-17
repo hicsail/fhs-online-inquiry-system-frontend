@@ -1,5 +1,5 @@
 import { Slider, Box, Typography } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 interface TableSliderFilterProps {
   filterName: string;
@@ -29,7 +29,7 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
       setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
     }
 
-    props.applyFilter(props.filterName, false, value);
+    props.applyFilter(props.filterName, false, [value[0], value[1] + 1]);
   };
 
   const marks = [
@@ -38,10 +38,18 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
       label: props.minValue.toFixed()
     },
     {
-      value: props.maxValue,
+      value: props.maxValue + 1,
       label: props.maxValue.toString()
     }
   ];
+
+  useEffect(() => {
+    if (!props.disabled) {
+      props.applyFilter(props.filterName, false, [value[0], value[1] + 1]);
+    } else {
+      props.applyFilter(props.filterName, true, null);
+    }
+  }, [props.disabled]);
 
   return (
     <Box paddingX="1rem">
