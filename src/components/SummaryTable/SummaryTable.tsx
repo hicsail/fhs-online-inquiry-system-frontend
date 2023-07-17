@@ -9,7 +9,8 @@ import Paper from '@mui/material/Paper';
 
 import { SortableTableHeader } from './SortableTableHeader';
 import { headerCells, Data } from './data';
-import { Typography } from '@mui/material';
+import { Box, Button, ButtonGroup, Typography } from '@mui/material';
+import { CSVLink } from 'react-csv';
 
 type Order = 'asc' | 'desc';
 
@@ -48,13 +49,41 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
     setOrderBy(property);
   };
 
+  const handleExportToJSON = () => {
+    const json = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`;
+    const link = document.createElement('a');
+    link.href = json;
+    link.download = `${props.name}.json`;
+    link.click();
+  };
+
   const sortedRows = useMemo(() => data.sort(getComparator(order, orderBy)), [order, orderBy, data]);
+  const csvData = [Object.keys(sortedRows[0])];
+  for (let i = 0; i < sortedRows.length; i++) {
+    csvData.push(Object.values(sortedRows[i]));
+  }
 
   return (
     <Paper sx={{ paddingX: 1, paddingY: '1rem' }}>
-      <Typography variant="h6" textAlign="left" gutterBottom>
-        {props.name}
-      </Typography>
+      <Box display="flex" marginBottom="1rem">
+        <Box display="flex" width={300}>
+          <Typography variant="h6" textAlign="left" gutterBottom>
+            {props.name}
+          </Typography>
+        </Box>
+        <Box display="flex" justifyContent="flex-end" width="100%">
+          <ButtonGroup>
+            <Button variant="contained" color="success">
+              <CSVLink data={csvData} filename={`${props.name}.csv`} style={{ color: 'inherit' }}>
+                .CSV
+              </CSVLink>
+            </Button>
+            <Button variant="contained" color="warning" onClick={handleExportToJSON}>
+              .JSON
+            </Button>
+          </ButtonGroup>
+        </Box>
+      </Box>
       <TableContainer component={Paper}>
         <Table>
           <SortableTableHeader order={order} orderBy={orderBy} onRequestSort={handleRequestSort} headerCells={headerCells} />

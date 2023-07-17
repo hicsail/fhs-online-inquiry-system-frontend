@@ -24,6 +24,7 @@ import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
 import { Filter, brainDataFilters } from '../types/Filter';
+import AutoTextBox from '../autocomplete/AutoTextBox';
 
 const categories = [
   'Postmortem Interval (Hours)',
