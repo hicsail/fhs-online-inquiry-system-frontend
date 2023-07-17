@@ -14,8 +14,13 @@ function SortableTableHeader(props: any) {
     <TableHead>
       <TableRow>
         {headerCells.map((headerCell: HeaderCell) => (
-          <TableCell key={headerCell.id} sortDirection={orderBy === headerCell.id ? order : false} sx={{ whiteSpace: 'nowrap' }}>
-            <TableSortLabel active={orderBy === headerCell.id} direction={orderBy === headerCell.id ? order : 'asc'} onClick={createSortHandler(headerCell.id)}>
+          <TableCell key={headerCell.id} sortDirection={orderBy === headerCell.id ? order : false} sx={{ whiteSpace: 'nowrap', backgroundColor: 'rgba(224, 224, 224, 1)' }}>
+            <TableSortLabel
+              style={{ display: 'flex', flexDirection: 'row-reverse', fontWeight: 'bold' }}
+              active={orderBy === headerCell.id}
+              direction={orderBy === headerCell.id ? order : 'asc'}
+              onClick={createSortHandler(headerCell.id)}
+            >
               {headerCell.label}
             </TableSortLabel>
           </TableCell>

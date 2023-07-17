@@ -7,7 +7,7 @@ export type Filter = {
   min?: number;
   step?: number;
   minDistance?: number;
-  optionType?: 'checkbox' | 'radio' | 'select';
+  optionType?: 'radio' | 'select';
   options?: any;
 };
 

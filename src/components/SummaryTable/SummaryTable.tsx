@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import { SortableTableHeader } from './SortableTableHeader';
 import { headerCells, Data } from './data';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { CSVLink } from 'react-csv';
 
 type Order = 'asc' | 'desc';
@@ -63,6 +64,12 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
     csvData.push(Object.values(sortedRows[i]));
   }
 
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover
+    }
+  }));
+
   return (
     <Paper sx={{ paddingX: 1, paddingY: '1rem' }}>
       <Box display="flex" marginBottom="1rem">
@@ -92,9 +99,9 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
               // We can dynamically create all the cells except for the id cell
               const cells = Object.entries(row).map((keypair: [string, keyof Data]) => {
                 return (
-                  <TableCell key={index + keypair[0]} align="right">
+                  <StyledTableCell key={index + keypair[0]} align="right">
                     {keypair[1]}
-                  </TableCell>
+                  </StyledTableCell>
                 );
               });
               return <TableRow key={row.type}>{cells}</TableRow>;

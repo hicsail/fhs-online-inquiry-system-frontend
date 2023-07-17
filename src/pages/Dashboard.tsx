@@ -61,7 +61,7 @@ export const DashboardPage: FC = () => {
   // unique filter states
   const [expand, setExpand] = useState(false);
 
-  const [value, setValue] = useState<string | undefined>('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string | undefined>('');
 
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -114,10 +114,14 @@ export const DashboardPage: FC = () => {
     }
   };
 
-  const handleRemoveFilter = (name: string, npCatagory: boolean) => {
+  const handleRemoveFilter = (name: string, label: string, npCatagory: boolean) => {
     changeFilter(name, null, true, npCatagory);
     setFilters((prevState) => {
       const newState = prevState.filter((filter) => filter.name !== name);
+      return newState;
+    });
+    setSelectedCategories((prevState) => {
+      const newState = prevState.filter((category) => category !== label);
       return newState;
     });
   };
@@ -132,7 +136,7 @@ export const DashboardPage: FC = () => {
 
   return (
     <Box width="calc(100vw - 6rem)" display="flex">
-      <Box width="80%">
+      <Box width="80%" minWidth="max(calc(80vw - 8rem - 100px), 60%)">
         <Box>
           <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
             <CircularProgress color="inherit" />
@@ -141,7 +145,7 @@ export const DashboardPage: FC = () => {
         </Box>
         <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
           <Button variant="contained" onClick={handleApplyFilters}>
-            Apply
+            Apply Filters
           </Button>
         </Box>
         <Box display="flex" justifyContent="flex-start" width="100%" paddingTop="1rem">
@@ -157,7 +161,7 @@ export const DashboardPage: FC = () => {
           </FormControl>
         </Box>
       </Box>
-      <Box width="20%" paddingLeft="2rem">
+      <Box width="20%" minWidth="300px" paddingLeft="2rem">
         <Accordion expanded={demoExpand} onChange={handleDemoExpand}>
           <AccordionSummary>
             <Typography variant="h6">Demographics</Typography>
@@ -174,35 +178,41 @@ export const DashboardPage: FC = () => {
           <AccordionDetails>
             <Autocomplete
               disablePortal
+              multiple
+              filterSelectedOptions
+              renderTags={() => null}
               id="combo-box-demo"
               options={categories}
-              sx={{ width: 300, backgroundColor: 'white', pr: '2vh' }}
+              sx={{ width: '100%', backgroundColor: 'white' }}
               renderInput={(params) => <TextField {...params} label="NP Conditions" />}
               ListboxProps={{
                 style: {
-                  maxHeight: '12vh'
+                  textAlign: 'start',
+                  maxHeight: '20vh'
                 }
               }}
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
               }}
               inputValue={inputValue}
-              value={value}
-              onChange={(event: any, newValue: string | null) => {
-                setValue(newValue);
+              value={selectedCategories}
+              onChange={(event: any, newValue: string[]) => {
+                setSelectedCategories(newValue!);
                 setFilters((prevState) => {
+                  console.log(newValue);
                   const newState = [...prevState];
-                  const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue);
+                  const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
                   if (newFilter) newState.push(newFilter);
                   return newState;
                 });
               }}
             />
+            {filters.length > 0 && <Divider sx={{ m: 1 }} />}
             {filters.map((filter, index) => (
               <div key={filter.name}>
                 <Box>
                   <Box textAlign="end">
-                    <IconButton onClick={() => handleRemoveFilter(filter.name, filter.npCategory)} sx={{ height: '5px', width: '5px' }}>
+                    <IconButton onClick={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)} sx={{ height: '5px', width: '5px' }}>
                       <CloseIcon sx={{ height: '15px', width: '15px' }} />
                     </IconButton>
                   </Box>
@@ -210,7 +220,7 @@ export const DashboardPage: FC = () => {
                   {filter?.type === 'slider' ? (
                     <TableSliderFilter
                       filterName={filter.name}
-                      variableName={`${filter.variableName + (index < filters.length)}`}
+                      variableName={`${filter.variableName}`}
                       npCatagory={filter.npCategory}
                       maxValue={filter.max!}
                       minValue={filter.min!}
