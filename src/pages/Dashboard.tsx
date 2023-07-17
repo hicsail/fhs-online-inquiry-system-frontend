@@ -177,7 +177,7 @@ export const DashboardPage: FC = () => {
             <Typography variant="h6">Brain Data</Typography>
           </AccordionSummary>
           <AccordionDetails sx={{ paddingRight: 0 }}>
-            <Stack sx={{ maxHeight: `calc(100vh - 530px - ${demoExpand && '120px'})`, overflowY: 'scroll' }} alignItems="left">
+            <Stack sx={{ paddingTop: '5px', maxHeight: `calc(100vh - 530px - ${demoExpand ? '120px' : '0px'})`, overflowY: 'scroll' }} alignItems="left">
               <Autocomplete
                 disablePortal
                 multiple
