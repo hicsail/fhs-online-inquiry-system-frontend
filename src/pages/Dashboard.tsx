@@ -12,6 +12,7 @@ import {
   IconButton,
   InputLabel,
   Select,
+  Stack,
   Switch,
   TextField,
   Typography
@@ -175,73 +176,75 @@ export const DashboardPage: FC = () => {
           <AccordionSummary>
             <Typography variant="h6">Brain Data</Typography>
           </AccordionSummary>
-          <AccordionDetails>
-            <Autocomplete
-              disablePortal
-              multiple
-              filterSelectedOptions
-              renderTags={() => null}
-              id="combo-box-demo"
-              options={categories}
-              sx={{ width: '100%', backgroundColor: 'white' }}
-              renderInput={(params) => <TextField {...params} label="NP Conditions" />}
-              ListboxProps={{
-                style: {
-                  textAlign: 'start',
-                  maxHeight: '20vh'
-                }
-              }}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
-              inputValue={inputValue}
-              value={selectedCategories}
-              onChange={(event: any, newValue: string[]) => {
-                setSelectedCategories(newValue!);
-                setFilters((prevState) => {
-                  console.log(newValue);
-                  const newState = [...prevState];
-                  const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
-                  if (newFilter) newState.push(newFilter);
-                  return newState;
-                });
-              }}
-            />
-            {filters.length > 0 && <Divider sx={{ m: 1 }} />}
-            {filters.map((filter, index) => (
-              <div key={filter.name}>
-                <Box>
-                  <Box textAlign="end">
-                    <IconButton onClick={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)} sx={{ height: '5px', width: '5px' }}>
-                      <CloseIcon sx={{ height: '15px', width: '15px' }} />
-                    </IconButton>
-                  </Box>
+          <AccordionDetails sx={{ paddingRight: 0 }}>
+            <Stack sx={{ maxHeight: `calc(100vh - 530px - ${demoExpand && '120px'})`, overflowY: 'scroll' }} alignItems="left">
+              <Autocomplete
+                disablePortal
+                multiple
+                filterSelectedOptions
+                renderTags={() => null}
+                id="combo-box-demo"
+                options={categories}
+                sx={{ width: '98%', backgroundColor: 'white' }}
+                renderInput={(params) => <TextField {...params} label="NP Conditions" />}
+                ListboxProps={{
+                  style: {
+                    textAlign: 'start',
+                    maxHeight: '20vh'
+                  }
+                }}
+                onInputChange={(event, newInputValue) => {
+                  setInputValue(newInputValue);
+                }}
+                inputValue={inputValue}
+                value={selectedCategories}
+                onChange={(event: any, newValue: string[]) => {
+                  setSelectedCategories(newValue!);
+                  setFilters((prevState) => {
+                    console.log(newValue);
+                    const newState = [...prevState];
+                    const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
+                    if (newFilter) newState.push(newFilter);
+                    return newState;
+                  });
+                }}
+              />
+              {filters.length > 0 && <Divider sx={{ m: 1 }} />}
+              {filters.map((filter, index) => (
+                <div key={filter.name}>
+                  <Box width="98%">
+                    <Box textAlign="end">
+                      <IconButton onClick={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)} sx={{ height: '5px', width: '5px' }}>
+                        <CloseIcon sx={{ height: '15px', width: '15px' }} />
+                      </IconButton>
+                    </Box>
 
-                  {filter?.type === 'slider' ? (
-                    <TableSliderFilter
-                      filterName={filter.name}
-                      variableName={`${filter.variableName}`}
-                      npCatagory={filter.npCategory}
-                      maxValue={filter.max!}
-                      minValue={filter.min!}
-                      minDistance={filter.minDistance}
-                      step={filter.step}
-                      applyFilter={changeFilter}
-                    />
-                  ) : (
-                    <TableOptionFilter
-                      filterName={filter.name}
-                      variableName={filter.variableName}
-                      npCatagory={filter.npCategory}
-                      optionType={filter.optionType!}
-                      options={filter.options!}
-                      applyFilter={changeFilter}
-                    />
-                  )}
-                </Box>
-                {index < filters.length - 1 && <Divider sx={{ m: 1 }} />}
-              </div>
-            ))}
+                    {filter?.type === 'slider' ? (
+                      <TableSliderFilter
+                        filterName={filter.name}
+                        variableName={`${filter.variableName}`}
+                        npCatagory={filter.npCategory}
+                        maxValue={filter.max!}
+                        minValue={filter.min!}
+                        minDistance={filter.minDistance}
+                        step={filter.step}
+                        applyFilter={changeFilter}
+                      />
+                    ) : (
+                      <TableOptionFilter
+                        filterName={filter.name}
+                        variableName={filter.variableName}
+                        npCatagory={filter.npCategory}
+                        optionType={filter.optionType!}
+                        options={filter.options!}
+                        applyFilter={changeFilter}
+                      />
+                    )}
+                  </Box>
+                  {index < filters.length - 1 && <Divider sx={{ m: 1 }} />}
+                </div>
+              ))}
+            </Stack>
           </AccordionDetails>
         </Accordion>
       </Box>
