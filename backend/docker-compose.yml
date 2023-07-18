@@ -1,0 +1,30 @@
+version: '1.0.0'
+
+services:
+  app:
+    container_name: inquiry_backend
+    platform: linux/amd64
+    restart: always
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3002:3000
+  db:
+    image: postgres:14.7
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 1m30s
+      timeout: 30s
+      retries: 10
+      start_period: 30s
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./fhs.sql:/docker-entrypoint-initdb.d/fhs.sql

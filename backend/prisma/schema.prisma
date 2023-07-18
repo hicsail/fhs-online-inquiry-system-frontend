@@ -1,0 +1,253 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x", "darwin-arm64"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_DOCKER")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model brain_data {
+  plus_framid    Int      @id
+  sex            Int?
+  age_core1      Int?
+  race_code      String?  @db.VarChar
+  edu_core0      Int?
+  edu_core17_1   Int?
+  edu_core17_2   Int?
+  edu_core2372   Int?
+  age_death      Decimal  @db.Decimal
+  npwhiart       Int?
+  npwhimac       Int?
+  npwmr          Int?
+  nphipscl       Int?
+  npthal         Int?
+  npbraak        Int?
+  npneur         Int?
+  npadnc         Int?
+  npdiff         Int?
+  npamy          Int?
+  npold          Int?
+  npold1         Int?
+  npold2         Int?
+  npold3         Int?
+  npold4         Int?
+  npoldd         Int?
+  npoldd1        Int?
+  npoldd2        Int?
+  npoldd3        Int?
+  npoldd4        Int?
+  nparter        Int?
+  nplbod         Int?
+  nptdpa         Int?
+  nptdpb         Int?
+  nptdpc         Int?
+  nptdpd         Int?
+  nptdpe         Int?
+  nppick         Int?
+  npftdt2        Int?
+  npcort         Int?
+  npprog         Int?
+  npftdt5        Int?
+  npftdt6        Int?
+  npftdt7        Int?
+  npftdt7a       Int?
+  npftdt7b       Int?
+  npftdt7c       Int?
+  npftdt7d       Int?
+  npftdt8        Int?
+  npftdt9        Int?
+  npftdt10       Int?
+  npalsmnd       Int?
+  npoftd         Int?
+  npoftd1        Int?
+  npoftd2        Int?
+  npoftd3        Int?
+  npoftd4        Int?
+  npoftd5        Int?
+  npnit          Int?
+  demrv046       Int?
+  demrv103       Int?
+  hrx_ever       Int?
+  dmrx_ever      Int?
+  liprx_ever     Int?
+  smoking_ever   Int?
+  nppmih_hours   Int?
+  nppmih_minutes Int?
+  nprin          Decimal? @db.Decimal
+  npfix          Int?
+  npfrotispre    Int?
+  npinf          Int?
+  npavas         Int?
+  npftdtau       Int?
+  pathmnd        Int?
+  pathad         Int?
+  relatauo       Int?
+  participants   participants @relation(fields: [plus_framid], references: [framid], onDelete: NoAction, onUpdate: NoAction)
+  
+}
+
+model core_sequence {
+  framid              Int
+  core_num            Int
+  total_tests         Int?
+  age                 Int?
+  date                DateTime? @db.Date
+  height              Decimal?  @db.Decimal
+  weight              Int?
+  bmi                 Decimal?  @db.Decimal
+  sbp                 Decimal?  @db.Decimal
+  dbp                 Decimal?  @db.Decimal
+  vent_rt             Int?
+  smoking             Int?
+  cpd                 Int?
+  bg                  Int?
+  tc                  Int?
+  triglycerides       Int?
+  calc_ldl            Int?
+  hdl                 Int?
+  hrx                 Int?
+  liprx               Int?
+  dmrx                Int?
+  hip                 Decimal?  @db.Decimal
+  waist               Decimal?  @db.Decimal
+  creatinine          Decimal?  @db.Decimal
+  fasting_bg          Int?
+  albumin             Decimal?  @db.Decimal
+  ast                 Int?
+  alt_indicator       Int?
+  hemoglobin          Decimal?  @db.Decimal
+  wbc                 Decimal?  @db.Decimal
+  aspirin_cc          Int?
+  nsaids_cc           Int?
+  depressrx           Int?
+  crp                 Decimal?  @db.Decimal
+  fibrinoger          Int?
+  hba1c               Decimal?  @db.Decimal
+  icam1               Decimal?  @db.Decimal
+  mcp1                Decimal?  @db.Decimal
+  interleukin6        Decimal?  @db.Decimal
+  interleukin18       Decimal?  @db.Decimal
+  amyloid40           Decimal?  @db.Decimal
+  amyloid40_indicator Int?
+  amyloid42           Decimal?  @db.Decimal
+  myeloperozidase     Decimal?  @db.Decimal
+  cd40                Decimal?  @db.Decimal
+  cogscr              Int?
+
+  @@id([framid, core_num])
+}
+
+model core_tests {
+  framid              Int
+  core_num            Int
+  total_tests         Int?
+  type                String       @db.VarChar
+  age                 Int?
+  date                DateTime?    @db.Date
+  height              Decimal?     @db.Decimal
+  weight              Int?
+  bmi                 Decimal?     @db.Decimal
+  sbp                 Decimal?     @db.Decimal
+  dbp                 Decimal?     @db.Decimal
+  vent_rt             Int?
+  smoking             Int?
+  cpd                 Int?
+  bg                  Int?
+  tc                  Int?
+  triglycerides       Int?
+  calc_ldl            Int?
+  hdl                 Int?
+  hrx                 Int?
+  liprx               Int?
+  dmrx                Int?
+  hip                 Decimal?     @db.Decimal
+  waist               Decimal?     @db.Decimal
+  creatinine          Decimal?     @db.Decimal
+  fasting_bg          Int?
+  albumin             Decimal?     @db.Decimal
+  ast                 Int?
+  alt_indicator       Int?
+  hemoglobin          Decimal?     @db.Decimal
+  wbc                 Decimal?     @db.Decimal
+  aspirin_cc          Int?
+  nsaids_cc           Int?
+  depressrx           Int?
+  crp                 Decimal?     @db.Decimal
+  fibrinoger          Int?
+  hba1c               Decimal?     @db.Decimal
+  icam1               Decimal?     @db.Decimal
+  mcp1                Decimal?     @db.Decimal
+  interleukin6        Decimal?     @db.Decimal
+  interleukin18       Decimal?     @db.Decimal
+  amyloid40           Decimal?     @db.Decimal
+  amyloid40_indicator Int?
+  amyloid42           Decimal?     @db.Decimal
+  myeloperozidase     Decimal?     @db.Decimal
+  cd40                Decimal?     @db.Decimal
+  cogscr              Int?
+  participants        participants @relation(fields: [framid], references: [framid], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([framid, core_num, type])
+}
+
+model dcdt_dates {
+  framid    Int
+  dcdt_date DateTime @db.Date
+  num_dcdt  Int?
+  sex       Int?
+
+  @@id([framid, dcdt_date])
+}
+
+model derived_dcdt_dates {
+  framid            Int
+  derived_dcdt_date DateTime @db.Date
+  num_derived_dcdt  Int?
+  sex               Int?
+
+  @@id([framid, derived_dcdt_date])
+}
+
+model dvoice_dates {
+  framid      Int
+  dvoice_date DateTime @db.Date
+  sex         Int?
+  
+
+  @@id([framid, dvoice_date])
+}
+
+model mri_dates {
+  framid   Int
+  mri_date DateTime @db.Date
+  sex      Int?
+  
+
+  @@id([framid, mri_date])
+}
+
+model participants {
+  framid     Int          @id @default(autoincrement())
+  cohort     Int?
+  id         Int
+  gender     Int
+  race       String?      @db.VarChar
+  edu_core2  Int?
+  edu_core8  Int?
+  mri_count  Int
+  dvoice_count Int
+  brain_data brain_data[] 
+  core_tests core_tests[]
+}
+
+model survival {
+  idtype        Int
+  framid        Int
+  date_of_death DateTime? @db.Date
+  age_at_death  Int?
+
+  @@id([idtype, framid])
+}
