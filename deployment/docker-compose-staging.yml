@@ -1,0 +1,7 @@
+version: '3'
+services:
+  fhs-frontend:
+    image: hicsail/fhs-frontend:staging
+    restart: always
+    ports:
+      - 3013:80
