@@ -1,34 +1,258 @@
-import { Box } from '@mui/material';
-import { FC } from 'react';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Autocomplete,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  FormControl,
+  IconButton,
+  InputLabel,
+  Select,
+  Stack,
+  Switch,
+  TextField,
+  Typography
+} from '@mui/material';
+import { FC, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
-import AutoTextBox from '../autocomplete/AutoTextBox';
+import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
+import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
+import axios from 'axios';
+import CloseIcon from '@mui/icons-material/Close';
+import { Filter, brainDataFilters } from '../types/Filter';
+
+const categories = [
+  'Postmortem Interval (Hours)',
+  'Age of Death',
+  'RNA Integrity Number',
+  'Frozen tissue present',
+  'Fixative',
+  'Observed infarcts',
+  'Chronic traumatic encephalopathy (CTE)',
+  'Atherosclerosis severity',
+  'ALS/Motor neuron disease',
+  'Derived AD dementia',
+  'Age-related tauopathy',
+  'FTLD with Tau pathology',
+  'FTLD with TDP-43',
+  'Hippocampal Sclerosis'
+];
+
+type FilterRequest = {
+  [key: string]: any;
+  categories?: { [key: string]: any };
+};
 
 export const DashboardPage: FC = () => {
-  const data = useLoaderData();
+  const [data, setData] = useState(useLoaderData());
+  const [filter, setFilter] = useState<FilterRequest>({});
+  const [loading, setLoading] = useState(false);
 
-  // TODO: data should be passed to the table
-  console.log(data);
+  // demographic filter states
+  const [demoExpand, setDemoExpand] = useState(false);
+  const [demoChecked, setDemoChecked] = useState(false);
+  const [demoDisabled, setDemoDisabled] = useState(true);
+
+  // unique filter states
+  const [expand, setExpand] = useState(false);
+
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState<string | undefined>('');
+
+  const [filters, setFilters] = useState<Filter[]>([]);
+
+  const changeFilter = (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => {
+    if (removeFilter) {
+      setFilter((prevState) => {
+        if (npCatagory && prevState.categories) {
+          const newCategories = prevState.categories;
+          delete newCategories![name];
+
+          return { ...prevState, categories: newCategories };
+        }
+
+        const newState = { ...prevState };
+        delete newState[name];
+        return newState;
+      });
+    } else {
+      setFilter((prevState) => {
+        if (npCatagory) {
+          const newCategories = prevState.categories ?? {};
+          newCategories[name] = [Number(value)];
+
+          return { ...prevState, categories: newCategories };
+        }
+
+        const newState = { ...prevState };
+        newState[name] = value;
+        return newState;
+      });
+    }
+  };
+
+  const handleDemoExpand = (event: any) => {
+    if (event.target.checked === undefined) {
+      setDemoExpand(!demoExpand);
+    } else {
+      setDemoChecked(event.target.checked);
+      setDemoDisabled(!event.target.checked);
+      setDemoExpand(event.target.checked);
+    }
+  };
+
+  const handleExpand = (event: any) => {
+    if (event.target.checked === undefined) {
+      setExpand(!expand);
+    } else {
+      setExpand(event.target.checked);
+    }
+  };
+
+  const handleRemoveFilter = (name: string, label: string, npCatagory: boolean) => {
+    changeFilter(name, null, true, npCatagory);
+    setFilters((prevState) => {
+      const newState = prevState.filter((filter) => filter.name !== name);
+      return newState;
+    });
+    setSelectedCategories((prevState) => {
+      const newState = prevState.filter((category) => category !== label);
+      return newState;
+    });
+  };
+
+  const handleApplyFilters = async () => {
+    setLoading(true);
+    const response = await axios.post('http://localhost:3002/brain-data', filter);
+
+    setData(response.data);
+    setLoading(false);
+  };
 
   return (
-    <Box width="calc(100vw - 4rem)" display="flex">
-      <Box width="70%">
-        <SummaryTable />
+    <Box width="calc(100vw - 6rem)" display="flex">
+      <Box width="80%" minWidth="max(calc(80vw - 8rem - 100px), 60%)">
+        <Box>
+          <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          <SummaryTable name="Brain Tissue Analytics" data={data} />
+        </Box>
+        <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
+          <Button variant="contained" onClick={handleApplyFilters}>
+            Apply Filters
+          </Button>
+        </Box>
+        <Box display="flex" justifyContent="flex-start" width="100%" paddingTop="1rem">
+          <FormControl sx={{ width: '35%' }}>
+            <InputLabel shrink>Categories</InputLabel>
+            <Select native multiple label="Categories">
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
-      <Box width="30%" paddingRight="2%" paddingLeft="2%">Filters
-        <AutoTextBox/>
+      <Box width="20%" minWidth="300px" paddingLeft="2rem">
+        <Accordion expanded={demoExpand} onChange={handleDemoExpand}>
+          <AccordionSummary>
+            <Typography variant="h6">Demographics</Typography>
+            <Switch checked={demoChecked} onClick={handleDemoExpand} sx={{ position: 'absolute', right: 10 }} />
+          </AccordionSummary>
+          <AccordionDetails>
+            <TableSliderFilter filterName="age_core1" variableName="Age Range" maxValue={100} minValue={0} disabled={demoDisabled} npCatagory={false} applyFilter={changeFilter} />
+          </AccordionDetails>
+        </Accordion>
+        <Accordion expanded={expand} onChange={handleExpand}>
+          <AccordionSummary>
+            <Typography variant="h6">Brain Data</Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ paddingRight: 0 }}>
+            <Stack sx={{ paddingTop: '5px', maxHeight: `calc(100vh - 530px - ${demoExpand ? '120px' : '0px'})`, overflowY: 'scroll' }} alignItems="left">
+              <Autocomplete
+                disablePortal
+                multiple
+                filterSelectedOptions
+                renderTags={() => null}
+                id="combo-box-demo"
+                options={categories}
+                sx={{ width: '98%', backgroundColor: 'white' }}
+                renderInput={(params) => <TextField {...params} label="NP Conditions" />}
+                ListboxProps={{
+                  style: {
+                    textAlign: 'start',
+                    maxHeight: '20vh'
+                  }
+                }}
+                onInputChange={(_event, newInputValue) => {
+                  setInputValue(newInputValue);
+                }}
+                inputValue={inputValue}
+                value={selectedCategories}
+                onChange={(_event: any, newValue: string[]) => {
+                  setSelectedCategories(newValue!);
+                  setFilters((prevState) => {
+                    console.log(newValue);
+                    const newState = [...prevState];
+                    const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
+                    if (newFilter) newState.push(newFilter);
+                    return newState;
+                  });
+                }}
+              />
+              {filters.length > 0 && <Divider sx={{ m: 1 }} />}
+              {filters.map((filter, index) => (
+                <div key={filter.name}>
+                  <Box width="98%">
+                    <Box textAlign="end">
+                      <IconButton onClick={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)} sx={{ height: '5px', width: '5px' }}>
+                        <CloseIcon sx={{ height: '15px', width: '15px' }} />
+                      </IconButton>
+                    </Box>
+
+                    {filter?.type === 'slider' ? (
+                      <TableSliderFilter
+                        filterName={filter.name}
+                        variableName={`${filter.variableName}`}
+                        npCatagory={filter.npCategory}
+                        maxValue={filter.max!}
+                        minValue={filter.min!}
+                        minDistance={filter.minDistance}
+                        step={filter.step}
+                        applyFilter={changeFilter}
+                      />
+                    ) : (
+                      <TableOptionFilter
+                        filterName={filter.name}
+                        variableName={filter.variableName}
+                        npCatagory={filter.npCategory}
+                        optionType={filter.optionType!}
+                        options={filter.options!}
+                        applyFilter={changeFilter}
+                      />
+                    )}
+                  </Box>
+                  {index < filters.length - 1 && <Divider sx={{ m: 1 }} />}
+                </div>
+              ))}
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </Box>
   );
 };
 
 export async function loader() {
-  // TODO: change to api call to the backend
-  const response = await fetch('https://swapi.dev/api/films');
+  const response = await axios.post('http://localhost:3002/brain-data');
 
-  if (!response.ok) {
-    throw new Error('Failed to load data');
-  } else {
-    return response;
-  }
+  return response.data;
 }

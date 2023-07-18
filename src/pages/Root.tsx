@@ -7,10 +7,7 @@ import { Footer } from '../components/Footer';
 export function RootLayout() {
   const [open, setOpen] = useState(false);
 
-  const datasets = [
-    { displayedName: 'Brain Data', name: 'brain-data' },
-    { displayedName: 'Heart Data', name: 'heart-data' }
-  ];
+  const datasets = [{ displayedName: 'Brain Data', name: 'brain-data' }];
 
   // handlers for sidebar
   const handleDrawerOpen = () => setOpen(!open);
@@ -44,7 +41,7 @@ export function RootLayout() {
           </List>
         </Box>
       </Drawer>
-      <main style={{ position: 'fixed', top: 0, left: 0, padding: '2rem' }}>
+      <main style={{ position: 'fixed', top: 0, left: 0, padding: '3rem' }}>
         <Toolbar />
         <Outlet />
       </main>
