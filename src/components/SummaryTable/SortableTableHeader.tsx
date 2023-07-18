@@ -2,7 +2,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import { Data, HeaderCell } from './data';
+import { Data, HeaderCell } from '../../types/Data';
 
 function SortableTableHeader(props: any) {
   const { order, orderBy, onRequestSort, headerCells } = props;

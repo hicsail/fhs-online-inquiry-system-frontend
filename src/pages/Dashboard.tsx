@@ -25,7 +25,6 @@ import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
 import { Filter, brainDataFilters } from '../types/Filter';
-import AutoTextBox from '../autocomplete/AutoTextBox';
 
 const categories = [
   'Postmortem Interval (Hours)',
@@ -193,12 +192,12 @@ export const DashboardPage: FC = () => {
                     maxHeight: '20vh'
                   }
                 }}
-                onInputChange={(event, newInputValue) => {
+                onInputChange={(_event, newInputValue) => {
                   setInputValue(newInputValue);
                 }}
                 inputValue={inputValue}
                 value={selectedCategories}
-                onChange={(event: any, newValue: string[]) => {
+                onChange={(_event: any, newValue: string[]) => {
                   setSelectedCategories(newValue!);
                   setFilters((prevState) => {
                     console.log(newValue);

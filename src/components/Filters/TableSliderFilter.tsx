@@ -19,7 +19,7 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
   const minDistance = props.minDistance ?? 10;
   const step = props.step ?? 1;
 
-  const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
+  const handleChange = (_event: Event, newValue: number | number[], activeThumb: number) => {
     if (!Array.isArray(newValue)) {
       return;
     }

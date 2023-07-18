@@ -12,8 +12,8 @@ interface TableOptionFilterProps {
 }
 
 export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
-  const [, setSelectValue] = useState<number>();
-  const [, setRadioValue] = useState<number>();
+  const [_selectValue, setSelectValue] = useState<number>();
+  const [_radioValue, setRadioValue] = useState<number>();
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     setSelectValue(Number(event.target.value));

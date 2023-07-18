@@ -1,10 +1,28 @@
-export interface HeaderCell {
+export type Data = {
+  type: string;
+  total: number;
+  average_age_at_death: number;
+  hs_grad: number;
+  college_grad: number;
+  mri_1: number;
+  mri_2: number;
+  mri_3: number;
+  dvoice_1: number;
+  dvoice_2: number;
+  dvoice_3: number;
+  smoking_ever: number;
+  overall_dementia_probe: number;
+  hypertension_ever: number;
+  diabetic_ever: number;
+};
+
+export type HeaderCell = {
   numeric: boolean;
   id: keyof Data;
   label: string;
   //   Not sure what the best way is to make table less wide
   width: string;
-}
+};
 
 export const headerCells: readonly HeaderCell[] = [
   {
@@ -98,21 +116,3 @@ export const headerCells: readonly HeaderCell[] = [
     width: '0%'
   }
 ];
-
-export interface Data {
-  type: string;
-  total: number;
-  average_age_at_death: number;
-  hs_grad: number;
-  college_grad: number;
-  mri_1: number;
-  mri_2: number;
-  mri_3: number;
-  dvoice_1: number;
-  dvoice_2: number;
-  dvoice_3: number;
-  smoking_ever: number;
-  overall_dementia_probe: number;
-  hypertension_ever: number;
-  diabetic_ever: number;
-}

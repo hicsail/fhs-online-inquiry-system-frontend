@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import { SortableTableHeader } from './SortableTableHeader';
-import { headerCells, Data } from './data';
+import { headerCells, Data } from '../../types/Data';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { CSVLink } from 'react-csv';
@@ -24,7 +24,7 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<keyof Data>('type');
 
-  const data: Data = props.data.map((row: any) => {
+  const data: Data[] = props.data.map((row: any) => {
     return {
       type: row.type,
       total: row.total,
@@ -61,7 +61,7 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
   const sortedRows = useMemo(() => data.sort(getComparator(order, orderBy)), [order, orderBy, data]);
   const csvData = [Object.keys(sortedRows[0])];
   for (let i = 0; i < sortedRows.length; i++) {
-    csvData.push(Object.values(sortedRows[i]));
+    csvData.push(Object.values(sortedRows[i]).map(String));
   }
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -97,7 +97,7 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
           <TableBody>
             {sortedRows.map((row, index) => {
               // We can dynamically create all the cells except for the id cell
-              const cells = Object.entries(row).map((keypair: [string, keyof Data]) => {
+              const cells = Object.entries(row).map((keypair: [string, any]) => {
                 return (
                   <StyledTableCell key={index + keypair[0]} align="right">
                     {keypair[1]}
