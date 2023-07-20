@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  fhs-backend:
+    image: hicsail/fhs-server:staging
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 3002:3000
+  db:
+    image: postgres:14.7
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./fhs.sql:/docker-entrypoint-initdb.d/fhs.sql
