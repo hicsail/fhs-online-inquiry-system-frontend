@@ -73,12 +73,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-  deployment:
-    runs-on: ubuntu-latest
-
-
       - name: Build & Push Docker Staging Build
         uses: docker/build-push-action@v4
         with:
-          context: ./client\
+          context: ./client
           tags: hicsail/fhs-client:staging
+
+  deployment:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/temp-integration'
+    needs: [server-docker, client-docker]
+    steps:
+      - name: Push to Staging
+        uses: fjogeleit/http-request-action@v1
+        with:
+          method: "POST"
+          url: ${{ secrets.PORTAINER_WEBHOOK }}
+          preventFailureOnNoResponse: true

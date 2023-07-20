@@ -1,6 +1,8 @@
 version: "3"
 
 services:
+  fhs-frontend:
+
   fhs-backend:
     image: hicsail/fhs-server:staging
     restart: always
