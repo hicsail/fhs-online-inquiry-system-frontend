@@ -128,7 +128,7 @@ export const DashboardPage: FC = () => {
 
   const handleApplyFilters = async () => {
     setLoading(true);
-    const response = await axios.post('http://localhost:3002/brain-data', filter);
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`, filter);
 
     setData(response.data);
     setLoading(false);
@@ -252,7 +252,7 @@ export const DashboardPage: FC = () => {
 };
 
 export async function loader() {
-  const response = await axios.post('http://localhost:3002/brain-data');
+  const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`);
 
   return response.data;
 }
