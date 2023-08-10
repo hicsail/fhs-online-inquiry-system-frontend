@@ -106,7 +106,6 @@ export const DashboardPage: FC = () => {
     setLoading(false);
   };
 
-  //
   useEffect(() => {
     const newFilter = filters[filters.length - 1];
     if (!newFilter) return;
@@ -155,7 +154,7 @@ export const DashboardPage: FC = () => {
             id="combo-box-demo"
             options={categories}
             sx={{ width: 300, marginRight: 2 }}
-            renderInput={(params) => <TextField {...params} label="NP Conditions" />}
+            renderInput={(params) => <TextField {...params} label="Filters" />}
             ListboxProps={{
               style: {
                 textAlign: 'start',
@@ -202,12 +201,12 @@ export const DashboardPage: FC = () => {
                       {filter?.type === 'slider' ? (
                         <TableSliderFilter
                           filterName={filter.name}
-                          variableName={`${filter.variableName}`}
+                          variableName={filter.variableName}
                           npCatagory={filter.npCategory}
-                          maxValue={filter.max!}
-                          minValue={filter.min!}
-                          minDistance={filter.minDistance}
+                          maxValue={filter.max}
+                          minValue={filter.min}
                           step={filter.step}
+                          value={filterValues}
                           applyFilter={changeFilter}
                         />
                       ) : (
@@ -215,8 +214,9 @@ export const DashboardPage: FC = () => {
                           filterName={filter.name}
                           variableName={filter.variableName}
                           npCatagory={filter.npCategory}
-                          optionType={filter.optionType!}
-                          options={filter.options!}
+                          optionType={filter.optionType}
+                          options={filter.options}
+                          value={filterValues[0]}
                           applyFilter={changeFilter}
                         />
                       )}

@@ -7,6 +7,7 @@ interface TableOptionFilterProps {
   optionType: 'radio' | 'select';
   options: { [key: string]: number };
   npCatagory: boolean;
+  value?: number;
   applyFilter: (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => void;
 }
 
@@ -32,7 +33,7 @@ export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
       <FormControl fullWidth>
         {props.optionType === 'select' && (
           <FormControl fullWidth>
-            <Select onChange={handleSelectChange} defaultValue={String(Object.values(props.options)[0])} style={{ textAlign: 'left' }}>
+            <Select onChange={handleSelectChange} value={props.value ? String(props.value) : String(Object.values(props.options)[0])} style={{ textAlign: 'left' }}>
               {Object.entries(props.options).map(([key, value]) => (
                 <MenuItem key={key} value={value}>
                   {key}
@@ -42,7 +43,7 @@ export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
           </FormControl>
         )}
         {props.optionType === 'radio' && (
-          <RadioGroup onChange={handleRadioChange} defaultValue={Object.values(props.options)[0]}>
+          <RadioGroup onChange={handleRadioChange} value={props.value ? props.value : Object.values(props.options)[0]}>
             {Object.entries(props.options).map(([key, value]) => (
               <FormControlLabel key={key} value={value} control={<Radio />} label={key} />
             ))}
