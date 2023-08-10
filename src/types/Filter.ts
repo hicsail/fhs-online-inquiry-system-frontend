@@ -30,6 +30,7 @@ export type Filter = {
 };
 
 export const brainDataFilters: Filter[] = [
+  { name: 'age_core1', variableName: 'Age Range', type: 'slider', npCategory: false, max: 100, min: 0 },
   { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', npCategory: false, max: 160, min: 0 },
   { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 100, min: 0 },
   { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', npCategory: false, max: 100, min: 0 },
