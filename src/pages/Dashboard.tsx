@@ -7,23 +7,7 @@ import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
 
-const categories = [
-  'Age Range',
-  'Postmortem Interval (Hours)',
-  'Age of Death',
-  'RNA Integrity Number',
-  'Frozen tissue present',
-  'Fixative',
-  'Observed infarcts',
-  'Chronic traumatic encephalopathy (CTE)',
-  'Atherosclerosis severity',
-  'ALS/Motor neuron disease',
-  'Derived AD dementia',
-  'Age-related tauopathy',
-  'FTLD with Tau pathology',
-  'FTLD with TDP-43',
-  'Hippocampal Sclerosis'
-];
+const categories = brainDataFilters.map((filter) => filter.variableName);
 
 type FilterRequest = {
   [key: string]: any;
