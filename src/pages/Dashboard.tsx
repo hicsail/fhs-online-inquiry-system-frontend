@@ -1,4 +1,4 @@
-import { Autocomplete, Backdrop, Box, Button, Card, Chip, CircularProgress, Paper, TextField } from '@mui/material';
+import { Autocomplete, Backdrop, Box, Button, Card, Chip, CircularProgress, Divider, Paper, TextField } from '@mui/material';
 import { FC, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
@@ -96,9 +96,9 @@ export const DashboardPage: FC = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Box>
-        <Box component={Paper} padding="16px" width="calc(80% - 32px)" display="flex" alignItems="center">
+    <Paper>
+      <Box display="flex" flexDirection="column" padding={4}>
+        <Box display="flex">
           <Autocomplete
             disablePortal
             multiple
@@ -107,7 +107,7 @@ export const DashboardPage: FC = () => {
             renderTags={() => null}
             id="combo-box-demo"
             options={categories}
-            sx={{ width: '15%', backgroundColor: 'white' }}
+            sx={{ width: 300, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="NP Conditions" />}
             ListboxProps={{
               style: {
@@ -123,7 +123,6 @@ export const DashboardPage: FC = () => {
             onChange={(_event: any, newValue: string[]) => {
               setSelectedCategories(newValue!);
               setFilters((prevState) => {
-                console.log(newValue);
                 const newState = [...prevState];
                 const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
                 if (newFilter) newState.push(newFilter);
@@ -131,58 +130,60 @@ export const DashboardPage: FC = () => {
               });
             }}
           />
-          {filters.map((filter) => (
-            <div key={filter.name}>
-              <Chip
-                label={`${filter.variableName}`}
-                onClick={() => handleFilterDropdown(filter.variableName)}
-                onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
-                variant="outlined"
-                sx={{ marginLeft: '10px' }}
-              />
-              {filterDropdowns[filter.variableName] && (
-                <Box component={Card} zIndex={1} position="absolute" padding={2} minWidth={300}>
-                  {filter?.type === 'slider' ? (
-                    <TableSliderFilter
-                      filterName={filter.name}
-                      variableName={`${filter.variableName}`}
-                      npCatagory={filter.npCategory}
-                      maxValue={filter.max!}
-                      minValue={filter.min!}
-                      minDistance={filter.minDistance}
-                      step={filter.step}
-                      applyFilter={changeFilter}
-                    />
-                  ) : (
-                    <TableOptionFilter
-                      filterName={filter.name}
-                      variableName={filter.variableName}
-                      npCatagory={filter.npCategory}
-                      optionType={filter.optionType!}
-                      options={filter.options!}
-                      applyFilter={changeFilter}
-                    />
-                  )}
-                </Box>
-              )}
-            </div>
-          ))}
+          <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} minWidth="30vw">
+            {filters.map((filter) => (
+              <div key={filter.name}>
+                <Chip
+                  label={`${filter.variableName}`}
+                  onClick={() => handleFilterDropdown(filter.variableName)}
+                  onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
+                  variant="outlined"
+                />
+                {filterDropdowns[filter.variableName] && (
+                  <Box component={Card} zIndex={1} position="absolute" padding={2} minWidth={300}>
+                    {filter?.type === 'slider' ? (
+                      <TableSliderFilter
+                        filterName={filter.name}
+                        variableName={`${filter.variableName}`}
+                        npCatagory={filter.npCategory}
+                        maxValue={filter.max!}
+                        minValue={filter.min!}
+                        minDistance={filter.minDistance}
+                        step={filter.step}
+                        applyFilter={changeFilter}
+                      />
+                    ) : (
+                      <TableOptionFilter
+                        filterName={filter.name}
+                        variableName={filter.variableName}
+                        npCatagory={filter.npCategory}
+                        optionType={filter.optionType!}
+                        options={filter.options!}
+                        applyFilter={changeFilter}
+                      />
+                    )}
+                  </Box>
+                )}
+              </div>
+            ))}
+          </Box>
         </Box>
-      </Box>
-      <Box width="80%">
+        <Divider sx={{ m: 2 }} />
         <Box>
-          <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
-          <SummaryTable name="Brain Tissue Analytics" data={data} />
-        </Box>
-        <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
-          <Button variant="contained" onClick={handleApplyFilters}>
-            Apply Filters
-          </Button>
+          <Box>
+            <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+            <SummaryTable name="Brain Tissue Analytics" data={data} />
+          </Box>
+          <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
+            <Button variant="contained" onClick={handleApplyFilters}>
+              Apply Filters
+            </Button>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </Paper>
   );
 };
 
