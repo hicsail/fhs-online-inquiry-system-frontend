@@ -16,18 +16,25 @@ export type Data = {
   diabetic_ever: number;
 };
 
-export type Filter = {
-  name: string;
-  variableName: string;
-  type: 'slider' | 'option';
-  npCategory: boolean;
-  max?: number;
-  min?: number;
-  step?: number;
-  minDistance?: number;
-  optionType?: 'radio' | 'select';
-  options?: any;
-};
+export type Filter =
+  | {
+      type: 'slider';
+      name: string;
+      variableName: string;
+      npCategory: boolean;
+      max: number;
+      min: number;
+      step?: number;
+      minDistance?: number;
+    }
+  | {
+      type: 'option';
+      name: string;
+      variableName: string;
+      npCategory: boolean;
+      optionType: 'radio' | 'select';
+      options: { [key: string]: number };
+    };
 
 export const brainDataFilters: Filter[] = [
   { name: 'age_core1', variableName: 'Age Range', type: 'slider', npCategory: false, max: 100, min: 0 },

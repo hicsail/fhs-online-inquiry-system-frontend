@@ -1,5 +1,5 @@
 import { Slider, Box, Typography } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 interface TableSliderFilterProps {
   filterName: string;
@@ -8,7 +8,6 @@ interface TableSliderFilterProps {
   minValue: number;
   step?: number;
   minDistance?: number;
-  disabled?: boolean;
   npCatagory: boolean;
   applyFilter: (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => void;
 }
@@ -44,21 +43,12 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
     }
   ];
 
-  useEffect(() => {
-    if (!props.disabled) {
-      props.applyFilter(props.filterName, [value[0], value[1] + 1], false, props.npCatagory);
-    } else {
-      props.applyFilter(props.filterName, null, true, props.npCatagory);
-    }
-  }, [props.disabled]);
-
   return (
     <Box paddingX="1rem">
       <Typography textAlign="start" variant="body2">
         {props.variableName}
       </Typography>
       <Slider
-        disabled={props.disabled}
         value={value}
         onChange={handleChange}
         marks={marks}

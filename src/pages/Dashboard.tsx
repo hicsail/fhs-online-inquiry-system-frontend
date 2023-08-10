@@ -1,22 +1,23 @@
-import { Autocomplete, Backdrop, Box, Button, Card, Chip, CircularProgress, Divider, Paper, TextField } from '@mui/material';
-import { FC, useState } from 'react';
+import { Autocomplete, Backdrop, Box, Button, Card, CircularProgress, Divider, Paper, TextField } from '@mui/material';
+import { FC, useEffect, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
 import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
 import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
+import { ExpandableChip } from '../components/ExpandableChip';
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
 type FilterRequest = {
-  [key: string]: any;
-  categories?: { [key: string]: any };
+  categories: { [key: string]: number[] };
+  [key: string]: number[] | { [innerKey: string]: number[] };
 };
 
 export const DashboardPage: FC = () => {
   const [data, setData] = useState(useLoaderData());
-  const [filter, setFilter] = useState<FilterRequest>({});
+  const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} });
   const [loading, setLoading] = useState(false);
 
   // filters dropdown states
@@ -29,7 +30,7 @@ export const DashboardPage: FC = () => {
 
   const changeFilter = (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => {
     if (removeFilter) {
-      setFilter((prevState) => {
+      setFilterRequest((prevState) => {
         if (npCatagory && prevState.categories) {
           const newCategories = prevState.categories;
           delete newCategories![name];
@@ -42,7 +43,7 @@ export const DashboardPage: FC = () => {
         return newState;
       });
     } else {
-      setFilter((prevState) => {
+      setFilterRequest((prevState) => {
         if (npCatagory) {
           const newCategories = prevState.categories ?? {};
           newCategories[name] = [Number(value)];
@@ -58,8 +59,8 @@ export const DashboardPage: FC = () => {
   };
 
   const handleFilterDropdown = (name: string) => {
+    // set all dropdowns to false except the one clicked
     setFilterDropdowns((prevState) => {
-      // set all to false
       const newState = Object.keys(prevState).reduce((acc, key) => {
         if (key !== name) acc[key] = false;
         return acc;
@@ -70,8 +71,23 @@ export const DashboardPage: FC = () => {
     });
   };
 
+  const handleAddFilter = (_event: any, newValue: string[]) => {
+    setSelectedCategories(newValue!);
+
+    // add new filter UI element to filters which will be rendered as chips
+    setFilters((prevState) => {
+      const newState = [...prevState];
+      const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
+      if (newFilter) newState.push(newFilter);
+      return newState;
+    });
+  };
+
   const handleRemoveFilter = (name: string, label: string, npCatagory: boolean) => {
+    // remove filter from filter request
     changeFilter(name, null, true, npCatagory);
+
+    // remove filter chip UI element
     setFilters((prevState) => {
       const newState = prevState.filter((filter) => filter.name !== name);
       return newState;
@@ -80,20 +96,51 @@ export const DashboardPage: FC = () => {
       const newState = prevState.filter((category) => category !== label);
       return newState;
     });
-    setFilterDropdowns((prevState) => {
-      const newState = { ...prevState };
-      delete newState[name];
-      return newState;
-    });
   };
 
   const handleApplyFilters = async () => {
     setLoading(true);
-    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`, filter);
+    const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`, filterRequest);
 
     setData(response.data);
     setLoading(false);
   };
+
+  //
+  useEffect(() => {
+    const newFilter = filters[filters.length - 1];
+    if (!newFilter) return;
+
+    // set all categories to false
+    setFilterDropdowns((prevState) => {
+      const newState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = false;
+        return acc;
+      }, {} as { [key: string]: boolean });
+
+      return newState;
+    });
+
+    // add new filter to filter request
+    setFilterRequest((prevState) => {
+      const newState: FilterRequest = { ...prevState, categories: prevState.categories ?? {} };
+
+      // add new filter to the filter request
+      if (newFilter?.npCategory) {
+        if (!newState.categories![newFilter.name]) {
+          if (newFilter.type === 'slider') newState.categories![newFilter.name] = [newFilter.min!, newFilter.max!];
+          else newState.categories![newFilter.name] = [Object.values(newFilter.options!)[0]];
+        }
+      } else {
+        if (!newState[newFilter!.name]) {
+          if (newFilter!.type === 'slider') newState[newFilter!.name] = [newFilter!.min!, newFilter!.max!];
+          else newState[newFilter!.name] = [Object.values(newFilter!.options!)[0]];
+        }
+      }
+
+      return newState;
+    });
+  }, [filters, selectedCategories]);
 
   return (
     <Paper>
@@ -120,52 +167,64 @@ export const DashboardPage: FC = () => {
             }}
             inputValue={inputValue}
             value={selectedCategories}
-            onChange={(_event: any, newValue: string[]) => {
-              setSelectedCategories(newValue!);
-              setFilters((prevState) => {
-                const newState = [...prevState];
-                const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
-                if (newFilter) newState.push(newFilter);
-                return newState;
-              });
-            }}
+            onChange={handleAddFilter}
           />
           <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} minWidth="30vw">
-            {filters.map((filter) => (
-              <div key={filter.name}>
-                <Chip
-                  label={`${filter.variableName}`}
-                  onClick={() => handleFilterDropdown(filter.variableName)}
-                  onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
-                  variant="outlined"
-                />
-                {filterDropdowns[filter.variableName] && (
-                  <Box component={Card} zIndex={1} position="absolute" padding={2} minWidth={300}>
-                    {filter?.type === 'slider' ? (
-                      <TableSliderFilter
-                        filterName={filter.name}
-                        variableName={`${filter.variableName}`}
-                        npCatagory={filter.npCategory}
-                        maxValue={filter.max!}
-                        minValue={filter.min!}
-                        minDistance={filter.minDistance}
-                        step={filter.step}
-                        applyFilter={changeFilter}
-                      />
-                    ) : (
-                      <TableOptionFilter
-                        filterName={filter.name}
-                        variableName={filter.variableName}
-                        npCatagory={filter.npCategory}
-                        optionType={filter.optionType!}
-                        options={filter.options!}
-                        applyFilter={changeFilter}
-                      />
-                    )}
-                  </Box>
-                )}
-              </div>
-            ))}
+            {filters.map((filter) => {
+              // add filter value to chip extended label
+              let expandText = filter.variableName;
+
+              // get filter values
+              const filterValues = filter.npCategory ? (filterRequest.categories[filter.name] as number[]) : (filterRequest[filter.name] as number[]);
+
+              if (filterValues) {
+                if (filter.type === 'slider') {
+                  expandText += `: ${filterValues[0]} - ${filterValues[1]}`;
+                } else if (filter.type === 'option') {
+                  const filterLabels = [];
+                  for (const label of Object.keys(filter.options)) {
+                    if (filterValues.includes(filter.options[label])) filterLabels.push(label);
+                  }
+                  expandText += `: ${filterLabels.join(', ')}`;
+                }
+              }
+
+              return (
+                <div key={filter.name}>
+                  <ExpandableChip
+                    label={`${filter.variableName}`}
+                    expendedLabel={expandText}
+                    onClick={() => handleFilterDropdown(filter.variableName)}
+                    onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
+                  />
+                  {filterDropdowns[filter.variableName] && (
+                    <Box component={Card} zIndex={1} position="absolute" padding={2} minWidth={300}>
+                      {filter?.type === 'slider' ? (
+                        <TableSliderFilter
+                          filterName={filter.name}
+                          variableName={`${filter.variableName}`}
+                          npCatagory={filter.npCategory}
+                          maxValue={filter.max!}
+                          minValue={filter.min!}
+                          minDistance={filter.minDistance}
+                          step={filter.step}
+                          applyFilter={changeFilter}
+                        />
+                      ) : (
+                        <TableOptionFilter
+                          filterName={filter.name}
+                          variableName={filter.variableName}
+                          npCatagory={filter.npCategory}
+                          optionType={filter.optionType!}
+                          options={filter.options!}
+                          applyFilter={changeFilter}
+                        />
+                      )}
+                    </Box>
+                  )}
+                </div>
+              );
+            })}
           </Box>
         </Box>
         <Divider sx={{ m: 2 }} />
