@@ -7,14 +7,7 @@ import fhslogo from '../assets/fhs-logo.svg';
 
 export const Footer: FC = () => {
   return (
-    <Box
-      component="footer"
-      position="fixed"
-      bottom={0}
-      left={0}
-      width="100%"
-      sx={{ background: (theme) => (theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800]), p: 6 }}
-    >
+    <Box component="footer" sx={{ background: (theme) => (theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800]), p: 6 }}>
       <Container maxWidth="lg">
         <Grid container>
           <Grid item>
