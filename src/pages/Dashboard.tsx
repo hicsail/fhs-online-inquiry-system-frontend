@@ -33,7 +33,7 @@ export const DashboardPage: FC = () => {
       setFilterRequest((prevState) => {
         if (npCatagory && prevState.categories) {
           const newCategories = prevState.categories;
-          delete newCategories![name];
+          delete newCategories[name];
 
           return { ...prevState, categories: newCategories };
         }
@@ -46,7 +46,7 @@ export const DashboardPage: FC = () => {
       setFilterRequest((prevState) => {
         if (npCatagory) {
           const newCategories = prevState.categories ?? {};
-          newCategories[name] = [Number(value)];
+          newCategories[name] = Array.isArray(value) ? value : [Number(value)];
 
           return { ...prevState, categories: newCategories };
         }
@@ -72,7 +72,7 @@ export const DashboardPage: FC = () => {
   };
 
   const handleAddFilter = (_event: any, newValue: string[]) => {
-    setSelectedCategories(newValue!);
+    setSelectedCategories(newValue);
 
     // add new filter UI element to filters which will be rendered as chips
     setFilters((prevState) => {
@@ -125,15 +125,15 @@ export const DashboardPage: FC = () => {
       const newState: FilterRequest = { ...prevState, categories: prevState.categories ?? {} };
 
       // add new filter to the filter request
-      if (newFilter?.npCategory) {
-        if (!newState.categories![newFilter.name]) {
-          if (newFilter.type === 'slider') newState.categories![newFilter.name] = [newFilter.min!, newFilter.max!];
-          else newState.categories![newFilter.name] = [Object.values(newFilter.options!)[0]];
+      if (newFilter.npCategory) {
+        if (!newState.categories[newFilter.name]) {
+          if (newFilter.type === 'slider') newState.categories[newFilter.name] = [newFilter.min, newFilter.max];
+          else if (newFilter.type === 'option' && newFilter.optionType !== 'checkbox') newState.categories[newFilter.name] = [Object.values(newFilter.options)[0]];
         }
       } else {
-        if (!newState[newFilter!.name]) {
-          if (newFilter!.type === 'slider') newState[newFilter!.name] = [newFilter!.min!, newFilter!.max!];
-          else newState[newFilter!.name] = [Object.values(newFilter!.options!)[0]];
+        if (!newState[newFilter.name]) {
+          if (newFilter.type === 'slider') newState[newFilter.name] = [newFilter.min, newFilter.max];
+          else if (newFilter.type === 'option' && newFilter.optionType !== 'checkbox') newState[newFilter.name] = [Object.values(newFilter.options)[0]];
         }
       }
 
@@ -198,7 +198,7 @@ export const DashboardPage: FC = () => {
                   />
                   {filterDropdowns[filter.variableName] && (
                     <Box component={Card} zIndex={1} position="absolute" padding={2} minWidth={300}>
-                      {filter?.type === 'slider' ? (
+                      {filter.type === 'slider' ? (
                         <TableSliderFilter
                           filterName={filter.name}
                           variableName={filter.variableName}
@@ -216,7 +216,7 @@ export const DashboardPage: FC = () => {
                           npCatagory={filter.npCategory}
                           optionType={filter.optionType}
                           options={filter.options}
-                          value={filterValues[0]}
+                          values={filterValues}
                           applyFilter={changeFilter}
                         />
                       )}

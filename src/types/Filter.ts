@@ -32,7 +32,7 @@ export type Filter =
       name: string;
       variableName: string;
       npCategory: boolean;
-      optionType: 'radio' | 'select';
+      optionType: 'radio' | 'select' | 'checkbox';
       options: { [key: string]: number };
     };
 
@@ -145,7 +145,7 @@ export const brainDataFilters: Filter[] = [
     variableName: 'Hippocampal Sclerosis',
     type: 'option',
     npCategory: true,
-    optionType: 'select',
+    optionType: 'checkbox',
     options: {
       None: 0,
       Unilateral: 1,
