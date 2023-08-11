@@ -245,7 +245,7 @@ export const DashboardPage: FC = () => {
           </Box>
         </Box>
         <Divider sx={{ m: 2 }} />
-        <Box width="fit-content" minWidth={600} maxWidth="100%">
+        <Box width="fit-content" minWidth={600} maxWidth="100%" maxHeight="100%">
           <Box>
             <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
               <CircularProgress color="inherit" />

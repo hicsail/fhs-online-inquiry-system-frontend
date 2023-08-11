@@ -7,12 +7,17 @@ import { Footer } from '../components/Footer';
 
 export function RootLayout() {
   const [open, setOpen] = useState(false);
+  const [footerOpen, setFooterOpen] = useState(false);
 
   const datasets = [{ displayedName: 'Brain Data', name: 'brain-data' }];
 
   // handlers for sidebar
   const handleDrawerOpen = () => setOpen(!open);
   const handleDrawerClose = () => setOpen(false);
+
+  // handler for footer
+  const handleFooterOpen = () => setFooterOpen(true);
+  const handleFooterClose = () => setFooterOpen(false);
 
   return (
     <>
@@ -45,11 +50,16 @@ export function RootLayout() {
           </List>
         </Box>
       </Drawer>
-      <main style={{ position: 'fixed', top: 0, left: 0, padding: '3rem', width: 'calc(100vw - 6rem)' }}>
-        <Toolbar />
-        <Outlet />
+      <main>
+        <Box position="fixed" top={65} left={0} padding="3rem" width="calc(100vw - 6rem)" height="calc(100% - 180px)" overflow="auto">
+          <Outlet />
+        </Box>
       </main>
-      <Footer />
+      <Box position="absolute" bottom={0} left={0} height={20} width="100%" onMouseOver={handleFooterOpen}>
+        <Drawer anchor="bottom" variant="persistent" open={footerOpen} onMouseLeave={handleFooterClose}>
+          <Footer />
+        </Drawer>
+      </Box>
     </>
   );
 }
