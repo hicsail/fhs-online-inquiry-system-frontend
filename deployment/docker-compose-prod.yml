@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  fhs-frontend:
+    container_name: fhs-client-production
+    image: hicsail/fhs-client:production
+    restart: always
+    ports:
+      - 3010:80
