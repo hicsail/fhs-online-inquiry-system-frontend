@@ -1,5 +1,5 @@
 import { Slider, Box, Typography } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 interface TableSliderFilterProps {
   filterName: string;
@@ -7,30 +7,20 @@ interface TableSliderFilterProps {
   maxValue: number;
   minValue: number;
   step?: number;
-  minDistance?: number;
-  disabled?: boolean;
   npCatagory: boolean;
+  value?: number[];
   applyFilter: (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => void;
 }
 
 export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
-  const [value, setValue] = useState<number[]>([props.minValue, props.maxValue]);
+  const [value, setValue] = useState<number[]>(props.value ? props.value : [props.minValue, props.maxValue]);
 
-  const minDistance = props.minDistance ?? 10;
   const step = props.step ?? 1;
 
-  const handleChange = (_event: Event, newValue: number | number[], activeThumb: number) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
+  const handleChange = (_event: Event, newValue: number | number[]) => {
+    setValue(newValue as number[]);
 
-    if (activeThumb === 0) {
-      setValue([Math.min(newValue[0], value[1] - minDistance), value[1]]);
-    } else {
-      setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
-    }
-
-    props.applyFilter(props.filterName, [value[0], value[1] + 1], false, props.npCatagory);
+    props.applyFilter(props.filterName, newValue as number[], false, props.npCatagory);
   };
 
   const marks = [
@@ -44,21 +34,12 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
     }
   ];
 
-  useEffect(() => {
-    if (!props.disabled) {
-      props.applyFilter(props.filterName, [value[0], value[1] + 1], false, props.npCatagory);
-    } else {
-      props.applyFilter(props.filterName, null, true, props.npCatagory);
-    }
-  }, [props.disabled]);
-
   return (
     <Box paddingX="1rem">
       <Typography textAlign="start" variant="body2">
         {props.variableName}
       </Typography>
       <Slider
-        disabled={props.disabled}
         value={value}
         onChange={handleChange}
         marks={marks}
