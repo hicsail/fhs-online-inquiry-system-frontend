@@ -135,7 +135,13 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
           </ButtonGroup>
         </Box>
       </Box>
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        onWheel={(event) => {
+          const container = event.currentTarget;
+          container.scrollLeft += event.deltaY;
+        }}
+      >
         <Table>
           <SortableTableHeader order={order} orderBy={orderBy} onRequestSort={handleRequestSort} headerCells={permanentCells.concat(displayedHeaderCells)} />
           <TableBody>
