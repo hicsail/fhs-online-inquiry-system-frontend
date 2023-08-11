@@ -1,7 +1,8 @@
-import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
+import StorageIcon from '@mui/icons-material/Storage';
 import { Footer } from '../components/Footer';
 
 export function RootLayout() {
@@ -29,12 +30,15 @@ export function RootLayout() {
       </AppBar>
       <Drawer anchor="left" open={open} onClose={handleDrawerClose}>
         <Toolbar />
-        <Box sx={{ width: 'auto' }} onClick={handleDrawerClose}>
+        <Box sx={{ width: 250 }} onClick={handleDrawerClose}>
           <List>
             {datasets.map((dataset) => (
               <ListItem key={dataset.name} disablePadding>
                 <ListItemButton component={NavLink} to={`/datasets/${dataset.name}`}>
-                  {dataset.displayedName}
+                  <ListItemIcon>
+                    <StorageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={dataset.displayedName} />
                 </ListItemButton>
               </ListItem>
             ))}
