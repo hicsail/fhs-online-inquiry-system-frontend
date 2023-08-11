@@ -7,6 +7,7 @@ import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
 import { ExpandableChip } from '../components/ExpandableChip';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
@@ -19,6 +20,7 @@ export const DashboardPage: FC = () => {
   const [data, setData] = useState(useLoaderData());
   const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} });
   const [loading, setLoading] = useState(false);
+  const [displayClearFilters, setDisplayClearFilters] = useState(false);
 
   // filters dropdown states
   const [filterDropdowns, setFilterDropdowns] = useState<{ [key: string]: boolean }>({});
@@ -106,9 +108,19 @@ export const DashboardPage: FC = () => {
     setLoading(false);
   };
 
+  const handleClearFilters = () => {
+    setFilterRequest({ categories: {} });
+    setFilters([]);
+    setSelectedCategories([]);
+    setDisplayClearFilters(false);
+  };
+
   useEffect(() => {
     const newFilter = filters[filters.length - 1];
     if (!newFilter) return;
+
+    if (filters.length > 1) setDisplayClearFilters(true);
+    else setDisplayClearFilters(false);
 
     // set all categories to false
     setFilterDropdowns((prevState) => {
@@ -142,7 +154,7 @@ export const DashboardPage: FC = () => {
   }, [filters, selectedCategories]);
 
   return (
-    <Paper>
+    <Paper sx={{ width: 'fit-content', maxWidth: '100%' }}>
       <Box display="flex" flexDirection="column" padding={4}>
         <Box display="flex">
           <Autocomplete
@@ -153,7 +165,7 @@ export const DashboardPage: FC = () => {
             renderTags={() => null}
             id="combo-box-demo"
             options={categories}
-            sx={{ minWidth: 300, width: 300, marginRight: 2 }}
+            sx={{ minWidth: 300, width: 300, marginRight: 1 }}
             renderInput={(params) => <TextField {...params} label="Filters" />}
             ListboxProps={{
               style: {
@@ -168,7 +180,12 @@ export const DashboardPage: FC = () => {
             value={selectedCategories}
             onChange={handleAddFilter}
           />
-          <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} minWidth="30vw">
+          {displayClearFilters && (
+            <Button onClick={handleClearFilters} startIcon={<ClearIcon />} sx={{ marginRight: 1 }}>
+              Clear
+            </Button>
+          )}
+          <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
             {filters.map((filter) => {
               // add filter value to chip extended label
               let expandText = filter.variableName;
@@ -228,16 +245,18 @@ export const DashboardPage: FC = () => {
           </Box>
         </Box>
         <Divider sx={{ m: 2 }} />
-        <Box width="fit-content" maxWidth="100%">
-          <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
-          <SummaryTable name="Brain Tissue Analytics" data={data} />
-        </Box>
-        <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
-          <Button variant="contained" onClick={handleApplyFilters}>
-            Apply Filters
-          </Button>
+        <Box width="fit-content" minWidth={600} maxWidth="100%">
+          <Box>
+            <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+            <SummaryTable name="Brain Tissue Analytics" data={data} />
+          </Box>
+          <Box display="flex" justifyContent="flex-end" paddingTop="1rem">
+            <Button variant="contained" onClick={handleApplyFilters}>
+              Apply Filters
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Paper>
