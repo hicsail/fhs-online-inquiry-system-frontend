@@ -1,4 +1,19 @@
-import { Autocomplete, Backdrop, Box, Button, Card, CircularProgress, Divider, Paper, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  Backdrop,
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Paper,
+  TextField
+} from '@mui/material';
 import { FC, useEffect, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
@@ -29,6 +44,11 @@ export const DashboardPage: FC = () => {
   const [inputValue, setInputValue] = useState<string | undefined>('');
 
   const [filters, setFilters] = useState<Filter[]>([]);
+
+  // dialog states
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [dialogTitle, setDialogTitle] = useState<string>('');
+  const [dialogContent, setDialogContent] = useState<string>('');
 
   const changeFilter = (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => {
     if (removeFilter) {
@@ -104,7 +124,18 @@ export const DashboardPage: FC = () => {
     setLoading(true);
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`, filterRequest);
 
-    setData(response.data);
+    if (response.status === 201) {
+      setData(response.data);
+    } else if (response.status === 206) {
+      setDialogOpen(true);
+      setDialogTitle('Failed to retrieve summary data');
+      setDialogContent(response.data.error);
+    } else {
+      setDialogOpen(true);
+      setDialogTitle('Something went wrong');
+      setDialogContent(JSON.stringify(response.data));
+    }
+
     setLoading(false);
   };
 
@@ -259,6 +290,15 @@ export const DashboardPage: FC = () => {
           </Box>
         </Box>
       </Box>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{dialogContent}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };
