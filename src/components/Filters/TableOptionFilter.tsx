@@ -28,7 +28,7 @@ interface TableOptionFilterProps {
 }
 
 export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
-  const [checked, setChecked] = useState<number[]>([]);
+  const [checked, setChecked] = useState<number[]>(props.values ? props.values : []);
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     props.applyFilter(props.filterName, event.target.value, false, props.npCatagory);
@@ -51,7 +51,6 @@ export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
   useEffect(() => {
     if (props.optionType !== 'checkbox') return;
 
-    console.log(props.values);
     if (checked.length === 0) props.applyFilter(props.filterName, null, true, props.npCatagory);
     else props.applyFilter(props.filterName, checked as number[], false, props.npCatagory);
   }, [checked]);

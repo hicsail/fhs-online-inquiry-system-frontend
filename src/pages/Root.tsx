@@ -41,7 +41,7 @@ export function RootLayout() {
           </List>
         </Box>
       </Drawer>
-      <main style={{ position: 'fixed', top: 0, left: 0, padding: '3rem' }}>
+      <main style={{ position: 'fixed', top: 0, left: 0, padding: '3rem', width: 'calc(100vw - 6rem)' }}>
         <Toolbar />
         <Outlet />
       </main>

@@ -153,7 +153,7 @@ export const DashboardPage: FC = () => {
             renderTags={() => null}
             id="combo-box-demo"
             options={categories}
-            sx={{ width: 300, marginRight: 2 }}
+            sx={{ minWidth: 300, width: 300, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="Filters" />}
             ListboxProps={{
               style: {
@@ -228,18 +228,16 @@ export const DashboardPage: FC = () => {
           </Box>
         </Box>
         <Divider sx={{ m: 2 }} />
-        <Box>
-          <Box>
-            <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
-              <CircularProgress color="inherit" />
-            </Backdrop>
-            <SummaryTable name="Brain Tissue Analytics" data={data} />
-          </Box>
-          <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
-            <Button variant="contained" onClick={handleApplyFilters}>
-              Apply Filters
-            </Button>
-          </Box>
+        <Box width="fit-content" maxWidth="100%">
+          <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          <SummaryTable name="Brain Tissue Analytics" data={data} />
+        </Box>
+        <Box display="flex" justifyContent="flex-end" width="100%" paddingTop="1rem">
+          <Button variant="contained" onClick={handleApplyFilters}>
+            Apply Filters
+          </Button>
         </Box>
       </Box>
     </Paper>
