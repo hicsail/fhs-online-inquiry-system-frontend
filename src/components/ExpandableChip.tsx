@@ -16,7 +16,7 @@ export interface ExpandableChipProps {
 export const ExpandableChip: FC<ExpandableChipProps> = (props) => {
   const { filter, filterRequest } = props;
 
-  const [color, setColor] = useState<'primary' | 'default'>('default');
+  const [color, setColor] = useState<'info' | 'default'>('default');
   const [displayedLabel, setDisplayedLabel] = useState<string>(props.label);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -54,7 +54,7 @@ export const ExpandableChip: FC<ExpandableChipProps> = (props) => {
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
-    setColor('primary');
+    setColor('info');
   };
 
   const handleClose = () => {
