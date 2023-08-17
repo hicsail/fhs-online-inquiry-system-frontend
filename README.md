@@ -11,6 +11,8 @@ Make sure you have the following software installed on your machine:
 
 _Note: Node version 14 is the least requirement. Version 16 or above is recommended._
 
+You will also need a running backend ([link](https://github.com/hicsail/fhs-online-inquiry-system-backend) to repo).
+
 ## Installation
 
 1. Clone the repository to your local machine:
@@ -27,6 +29,10 @@ _Note: Node version 14 is the least requirement. Version 16 or above is recommen
    ```
 
 ## Development
+
+Before you run the app, make sure you have setup the environment variable. To do it, create a `.env` file and variable `VITE_BACKEND_URL` to it.
+
+**Remember: DO NOT include a forward slash (`/`) at the end of the URL.**
 
 To start the development server, run the following command:
 
