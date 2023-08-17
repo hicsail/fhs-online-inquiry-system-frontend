@@ -13,7 +13,7 @@ import {
   Paper,
   TextField
 } from '@mui/material';
-import { FC, useEffect, useState } from 'react';
+import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { useLoaderData } from 'react-router-dom';
 import axios from 'axios';
@@ -161,14 +161,36 @@ export const DashboardPage: FC = () => {
         <Box display="flex">
           <Autocomplete
             disablePortal
+            disableClearable
             multiple
-            filterSelectedOptions
             size="small"
             renderTags={() => null}
             id="combo-box-demo"
             options={categories}
             sx={{ minWidth: 300, width: 300, marginRight: 1 }}
-            renderInput={(params) => <TextField {...params} label="Filters" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Filters"
+                onKeyDown={(event: KeyboardEvent) => {
+                  if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
+                }}
+              />
+            )}
+            renderOption={(props, option) => {
+              return (
+                <li {...props} aria-selected="false">
+                  {option}
+                </li>
+              );
+            }}
+            filterOptions={() => {
+              const filtered = categories.filter((option) => {
+                return !selectedCategories.includes(option);
+              });
+
+              return filtered;
+            }}
             ListboxProps={{
               style: {
                 textAlign: 'start',
