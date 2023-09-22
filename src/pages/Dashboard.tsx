@@ -21,29 +21,47 @@ import { Filter, brainDataFilters } from '../types/Filter';
 import { ExpandableChip } from '../components/ExpandableChip';
 import ClearIcon from '@mui/icons-material/Clear';
 
+// options for the autocomplete filter
+// the value of it shouldn't be changed
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
+// HTTP request body type for the filter request
 type FilterRequest = {
   categories: { [key: string]: number[] };
   [key: string]: number[] | { [innerKey: string]: number[] };
 };
 
 export const DashboardPage: FC = () => {
-  const [data, setData] = useState(useLoaderData());
-  const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} });
-  const [loading, setLoading] = useState(false);
-  const [displayClearFilters, setDisplayClearFilters] = useState(false);
+  const [data, setData] = useState(useLoaderData()); // HTTP response.data returned from the loader() function at the bottom of this file
+  const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} }); // HTTP request body to be sent to the backend
+  const [loading, setLoading] = useState(false); // state for displaying the loading backdrop on the table
+  const [displayClearFilters, setDisplayClearFilters] = useState(false); // state for displaying the clear filters button
 
+  /**
+   * The following states are used for the autocomplete filter
+   *
+   * @const selectedCategories: A list of selected filters. It only stores the name of the filter. AutoComplete will use it to filter out
+   *    options. Chips will be rendered based on what are in the list.
+   * @const inputValue: The value of the input text field in the AutoComplete.
+   */
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string | undefined>('');
 
+  /**
+   * @const filters: A list of selected filters. You should manually keep it in sync with selectedCategories. It is used to render
+   *    filter panels. It is also used to generate the HTTP request body.
+   */
   const [filters, setFilters] = useState<Filter[]>([]);
 
-  // dialog states
+  // states for the dialog which will be displayed when there is an error
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogContent, setDialogContent] = useState<string>('');
 
+  /**
+   * This function will be passed to the filter panels. Therefore, when the user changes the filter value or remove the filter, we can
+   * update the filter HTTP request body at the same time.
+   */
   const changeFilter = (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => {
     if (removeFilter) {
       setFilterRequest((prevState) => {
@@ -74,6 +92,7 @@ export const DashboardPage: FC = () => {
     }
   };
 
+  // handler for autocomplete to add new filter to the list
   const handleAddFilter = (_event: any, newValue: string[]) => {
     setSelectedCategories(newValue);
 
@@ -86,6 +105,7 @@ export const DashboardPage: FC = () => {
     });
   };
 
+  // handler for chips to remove filter from the list
   const handleRemoveFilter = (name: string, label: string, npCatagory: boolean) => {
     // remove filter from filter request
     changeFilter(name, null, true, npCatagory);
@@ -127,18 +147,22 @@ export const DashboardPage: FC = () => {
     setDisplayClearFilters(false);
   };
 
+  /**
+   * This effect is mainly used to keep autocomplete, chips, filter request body and filter panels in sync.
+   */
   useEffect(() => {
+    // Based on trust. The last element in the list should be the newly added filter.
     const newFilter = filters[filters.length - 1];
     if (!newFilter) return;
 
+    // clear filters only make sense when there are more than 1 filter
     if (filters.length > 1) setDisplayClearFilters(true);
     else setDisplayClearFilters(false);
 
-    // add new filter to filter request
+    // add new filter to filter HTTP request body
     setFilterRequest((prevState) => {
       const newState: FilterRequest = { ...prevState, categories: prevState.categories ?? {} };
 
-      // add new filter to the filter request
       if (newFilter.npCategory) {
         if (!newState.categories[newFilter.name]) {
           if (newFilter.type === 'slider') newState.categories[newFilter.name] = [newFilter.min, newFilter.max];
@@ -155,6 +179,18 @@ export const DashboardPage: FC = () => {
     });
   }, [filters, selectedCategories]);
 
+  /**
+   * <Autocomplete>:
+   *    - @prop options: The list of options that will be displayed in the dropdown. Value should not be changed.
+   *    - @prop renderTags: Should returns null which will hide the selected chips in the text field.
+   *    - @prop renderInput: How the input text field is rendered.
+   *    - @prop renderOption: How each option is rendered in the dropdown.
+   *    - @prop filterOptions: Should filter out the selected options.
+   *    - @prop onChange: Autocomplete does not add/delete by itself. You should do that here manually.
+   *    - @prop value: Autocomplete does not tell which option is newly added. It will give you all selected
+   *        options. Any newly added option will be the last element in the array. So we can use this to get
+   *        the newly added option.
+   */
   return (
     <Paper sx={{ width: 'fit-content', maxWidth: '100%' }}>
       <Box display="flex" flexDirection="column" padding={4}>
@@ -178,6 +214,7 @@ export const DashboardPage: FC = () => {
               />
             )}
             renderOption={(props, option) => {
+              // how each option is rendered in the dropdown
               return (
                 <li {...props} aria-selected="false">
                   {option}
@@ -185,7 +222,9 @@ export const DashboardPage: FC = () => {
               );
             }}
             filterOptions={() => {
+              // what will be displayed in the dropdown
               const filtered = categories.filter((option) => {
+                // exclude the selected filters
                 return !selectedCategories.includes(option);
               });
 
