@@ -32,6 +32,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
 import InfoIcon from '@mui/icons-material/Info';
 import AddIcon from '@mui/icons-material/Add';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
@@ -202,70 +203,68 @@ export const DashboardPage: FC = () => {
       <Drawer anchor="right" open={openFilterSideBar} onClose={handleFilterSideBarClose}>
         <Toolbar />
         <Box sx={{ width: 400 }}>
-        <Autocomplete
-              disablePortal
-              disableClearable
-              multiple
-              size="small"
-              renderTags={() => null}
-              id="combo-box-demo"
-              options={categories}
-              sx={{ minWidth: 300, width: 300, marginLeft: 1, marginTop: 5}}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Filters"
-                  onKeyDown={(event: KeyboardEvent) => {
-                    if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
-                  }}
-                />
-              )}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} aria-selected="false">
-                    {option}
-                  </li>
-                );
-              }}
-              filterOptions={() => {
-                const filtered = categories.filter((option) => {
-                  return !selectedCategories.includes(option);
-                });
+          <Autocomplete
+                disablePortal
+                disableClearable
+                multiple
+                size="small"
+                renderTags={() => null}
+                id="combo-box-demo"
+                options={categories}
+                sx={{ minWidth: 300, width: 300, marginLeft: 1, marginTop: 5}}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Filters"
+                    onKeyDown={(event: KeyboardEvent) => {
+                      if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
+                    }}
+                  />
+                )}
+                renderOption={(props, option) => {
+                  return (
+                    <li {...props} aria-selected="false">
+                      {option}
+                    </li>
+                  );
+                }}
+                filterOptions={() => {
+                  const filtered = categories.filter((option) => {
+                    return !selectedCategories.includes(option);
+                  });
 
-                return filtered;
-              }}
-              ListboxProps={{
-                style: {
-                  textAlign: 'start',
-                  maxHeight: '20vh'
-                }
-              }}
-              onInputChange={(_event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
-              inputValue={inputValue}
-              value={selectedCategories}
-              onChange={handleAddFilterAutocomplete}
-            />
-        <List>
-            {brainDataFilters.map((filter) => (
-              
-              <ListItem key={filter.name} disablePadding>
-                <ListItemButton>
-                  <IconButton onClick={() => {handleAddFilter(filter.variableName)}} > 
-                    <AddIcon/>
-                  </IconButton>
-                  <ListItemText primary={filter.variableName} />
-                  <Tooltip title={filter.description}>
-                    <ListItemIcon>
-                      <InfoIcon />
-                    </ListItemIcon>
-                  </Tooltip>
-                  
-                </ListItemButton>
-              </ListItem>
-              
-            ))}
+                  return filtered;
+                }}
+                ListboxProps={{
+                  style: {
+                    textAlign: 'start',
+                    maxHeight: '20vh'
+                  }
+                }}
+                onInputChange={(_event, newInputValue) => {
+                  setInputValue(newInputValue);
+                }}
+                inputValue={inputValue}
+                value={selectedCategories}
+                onChange={handleAddFilterAutocomplete}
+              />
+            <List>
+              {brainDataFilters.map((filter) => (
+                
+                <ListItem key={filter.name} disablePadding>
+                  <ListItemButton>
+                    <IconButton onClick={() => {handleAddFilter(filter.variableName)}} disabled={filters.includes(filter)} > 
+                     {filters.includes(filter) ? <CheckBoxIcon/> : <AddIcon/>}
+                    </IconButton>
+                    <ListItemText primary={filter.variableName} />
+                    <Tooltip title={filter.description}>
+                      <ListItemIcon>
+                        <InfoIcon />
+                      </ListItemIcon>
+                    </Tooltip>
+                  </ListItemButton>
+                </ListItem>
+              ))}
           </List>
         </Box>
       </Drawer>
