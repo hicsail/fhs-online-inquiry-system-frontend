@@ -112,7 +112,6 @@ export const DashboardPage: FC = () => {
   };
 
   const handleAddFilter = (newValue: string) => {
-    console.log(newValue)
     setSelectedCategories((prevState) => {
       return [...prevState, newValue];
     });
