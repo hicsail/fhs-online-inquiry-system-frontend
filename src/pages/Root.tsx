@@ -28,7 +28,7 @@ export function RootLayout() {
       </AppBar>
       <Drawer variant="permanent" anchor="left" PaperProps={{ sx: { backgroundColor: '#e9ecef' } }}>
         <Toolbar />
-        <Box sx={{ width: 250 }}>
+        <Box sx={{ width: 300 }}>
           <List>
             <ListItem disablePadding>
               <ListItemButton component={NavLink} to="/">
@@ -61,9 +61,9 @@ export function RootLayout() {
         sx={{
           position: 'fixed',
           top: 65,
-          left: 250,
+          left: 300,
           padding: '3rem',
-          width: 'calc(100vw - 6rem - 250px)',
+          width: 'calc(100vw - 6rem - 300px)',
           height: 'calc(100% - 180px)',
           overflow: 'auto'
         }}
