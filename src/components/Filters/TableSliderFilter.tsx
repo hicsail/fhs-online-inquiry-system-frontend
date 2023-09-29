@@ -1,4 +1,4 @@
-import { Slider, Box, Typography } from '@mui/material';
+import { Slider, Box, Typography, Grid } from '@mui/material';
 import { FC, useState } from 'react';
 
 interface TableSliderFilterProps {
@@ -35,21 +35,25 @@ export const TableSliderFilter: FC<TableSliderFilterProps> = (props) => {
   ];
 
   return (
-    <Box paddingX="1rem">
-      <Typography textAlign="start" variant="body2">
-        {props.variableName}
-      </Typography>
-      <Slider
-        value={value}
-        onChange={handleChange}
-        marks={marks}
-        min={props.minValue}
-        max={props.maxValue}
-        step={step}
-        valueLabelDisplay="auto"
-        valueLabelFormat={(value) => fixFloatingPointDisplay(step, `${value}`)}
-        disableSwap
-      />
+    <Box paddingX={5} paddingY={1} width="80%">
+      <Grid container spacing={2}>
+        <Grid item xs={6} md={4}>
+          <Typography textAlign="start">{props.variableName}</Typography>
+        </Grid>
+        <Grid item xs={6} md={8}>
+          <Slider
+            value={value}
+            onChange={handleChange}
+            marks={marks}
+            min={props.minValue}
+            max={props.maxValue}
+            step={step}
+            valueLabelDisplay="auto"
+            valueLabelFormat={(value) => fixFloatingPointDisplay(step, `${value}`)}
+            disableSwap
+          />
+        </Grid>
+      </Grid>
     </Box>
   );
 };

@@ -1,4 +1,7 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Autocomplete,
   Backdrop,
   Box,
@@ -10,8 +13,10 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
+  IconButton,
   Paper,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
@@ -20,6 +25,10 @@ import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
 import { ExpandableChip } from '../components/ExpandableChip';
 import ClearIcon from '@mui/icons-material/Clear';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CloseIcon from '@mui/icons-material/Close';
+import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
+import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
@@ -156,85 +165,102 @@ export const DashboardPage: FC = () => {
   }, [filters, selectedCategories]);
 
   return (
-    <Paper sx={{ width: 'fit-content', maxWidth: '100%' }}>
+    <>
       <Box display="flex" flexDirection="column" padding={4}>
-        <Box display="flex">
-          <Autocomplete
-            disablePortal
-            disableClearable
-            multiple
-            size="small"
-            renderTags={() => null}
-            id="combo-box-demo"
-            options={categories}
-            sx={{ minWidth: 300, width: 300, marginRight: 1 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Filters"
-                onKeyDown={(event: KeyboardEvent) => {
-                  if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
-                }}
-              />
-            )}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} aria-selected="false">
-                  {option}
-                </li>
-              );
-            }}
-            filterOptions={() => {
-              const filtered = categories.filter((option) => {
-                return !selectedCategories.includes(option);
-              });
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h5" component="h5">
+              Current Filter
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Autocomplete
+              disablePortal
+              disableClearable
+              multiple
+              size="small"
+              renderTags={() => null}
+              id="combo-box-demo"
+              options={categories}
+              sx={{ minWidth: 300, width: 300, marginRight: 1 }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Filters"
+                  onKeyDown={(event: KeyboardEvent) => {
+                    if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
+                  }}
+                />
+              )}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} aria-selected="false">
+                    {option}
+                  </li>
+                );
+              }}
+              filterOptions={() => {
+                const filtered = categories.filter((option) => {
+                  return !selectedCategories.includes(option);
+                });
 
-              return filtered;
-            }}
-            ListboxProps={{
-              style: {
-                textAlign: 'start',
-                maxHeight: '20vh'
-              }
-            }}
-            onInputChange={(_event, newInputValue) => {
-              setInputValue(newInputValue);
-            }}
-            inputValue={inputValue}
-            value={selectedCategories}
-            onChange={handleAddFilter}
-          />
-          {displayClearFilters && (
-            <Button onClick={handleClearFilters} startIcon={<ClearIcon />} sx={{ marginRight: 1 }}>
-              Clear
-            </Button>
-          )}
-          <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
-            {filters.map((filter) => (
-              <ExpandableChip
-                key={filter.name}
-                filter={filter}
-                filterRequest={filterRequest}
-                label={`${filter.variableName}`}
-                applyFilter={changeFilter}
-                onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
-              />
-            ))}
-          </Box>
-        </Box>
-        <Divider sx={{ m: 2 }} />
+                return filtered;
+              }}
+              ListboxProps={{
+                style: {
+                  textAlign: 'start',
+                  maxHeight: '20vh'
+                }
+              }}
+              onInputChange={(_event, newInputValue) => {
+                setInputValue(newInputValue);
+              }}
+              inputValue={inputValue}
+              value={selectedCategories}
+              onChange={handleAddFilter}
+            />
+            {filters.map((filter, index) => {
+              const filterValues = filter.npCategory ? (filterRequest.categories[filter.name] as number[]) : (filterRequest[filter.name] as number[]);
+
+              return (
+                <div key={filter.name}>
+                  <Box textAlign="end">
+                    <IconButton onClick={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)} sx={{ height: '30px', width: '30px' }}>
+                      <CloseIcon sx={{ height: '20px', width: '20px' }} />
+                    </IconButton>
+                  </Box>
+                  {filter.type === 'slider' ? (
+                    <TableSliderFilter
+                      filterName={filter.name}
+                      variableName={filter.variableName}
+                      npCatagory={filter.npCategory}
+                      maxValue={filter.max}
+                      minValue={filter.min}
+                      step={filter.step}
+                      value={filterValues}
+                      applyFilter={changeFilter}
+                    />
+                  ) : (
+                    <TableOptionFilter
+                      filterName={filter.name}
+                      variableName={filter.variableName}
+                      npCatagory={filter.npCategory}
+                      optionType={filter.optionType}
+                      options={filter.options}
+                      values={filterValues}
+                      applyFilter={changeFilter}
+                    />
+                  )}
+                  {index < filters.length - 1 && <Divider sx={{ m: 2 }} />}
+                </div>
+              );
+            })}
+          </AccordionDetails>
+        </Accordion>
         <Box width="fit-content" minWidth={600} maxWidth="100%" maxHeight="100%">
-          <Box>
-            <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
-              <CircularProgress color="inherit" />
-            </Backdrop>
-            <SummaryTable name="Brain Tissue Analytics" data={data} />
-          </Box>
-          <Box display="flex" justifyContent="flex-end" paddingTop="1rem">
-            <Button variant="contained" onClick={handleApplyFilters}>
-              Apply Filters
-            </Button>
-          </Box>
+          <Button variant="contained" onClick={handleApplyFilters}>
+            Apply Filters
+          </Button>
         </Box>
       </Box>
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
@@ -246,7 +272,7 @@ export const DashboardPage: FC = () => {
           <Button onClick={() => setDialogOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>
-    </Paper>
+    </>
   );
 };
 
