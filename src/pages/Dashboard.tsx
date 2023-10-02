@@ -3,10 +3,8 @@ import {
   AccordionDetails,
   AccordionSummary,
   Autocomplete,
-  Backdrop,
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,7 +12,6 @@ import {
   DialogTitle,
   Divider,
   IconButton,
-  Paper,
   TextField,
   Typography,
   Drawer,
@@ -27,12 +24,9 @@ import {
   Tooltip
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
-import { SummaryTable } from '../components/SummaryTable/SummaryTable';
-import { useLoaderData } from 'react-router-dom';
+// import { useLoaderData } from 'react-router-dom';
 import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
-import { ExpandableChip } from '../components/ExpandableChip';
-import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
 import InfoIcon from '@mui/icons-material/Info';
 import AddIcon from '@mui/icons-material/Add';
@@ -50,10 +44,11 @@ type FilterRequest = {
 };
 
 export const DashboardPage: FC = () => {
-  const [data, setData] = useState(useLoaderData());
+  // TODO: Uncomment this for table
+  // const [data, setData] = useState(useLoaderData());
   const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} });
-  const [loading, setLoading] = useState(false);
-  const [displayClearFilters, setDisplayClearFilters] = useState(false);
+  // TODO: Remove this if not needed
+  // const [displayClearFilters, setDisplayClearFilters] = useState(false);
   const [openFilterSideBar, setFilterSideBar] = useState(false);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -64,8 +59,6 @@ export const DashboardPage: FC = () => {
   // Filter side bar handler
   const handleFilterSideBarOpen = () => setFilterSideBar(!openFilterSideBar);
   const handleFilterSideBarClose = () => setFilterSideBar(false);
-
-  // Filter objects
 
   // dialog states
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -145,11 +138,11 @@ export const DashboardPage: FC = () => {
   };
 
   const handleApplyFilters = async () => {
-    setLoading(true);
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`, filterRequest);
 
     if (response.status === 201) {
-      setData(response.data);
+      // TODO: Uncomment this for table
+      // setData(response.data);
     } else if (response.status === 206) {
       setDialogOpen(true);
       setDialogTitle('Failed to retrieve summary data');
@@ -159,23 +152,23 @@ export const DashboardPage: FC = () => {
       setDialogTitle('Something went wrong');
       setDialogContent(JSON.stringify(response.data));
     }
-
-    setLoading(false);
   };
 
-  const handleClearFilters = () => {
-    setFilterRequest({ categories: {} });
-    setFilters([]);
-    setSelectedCategories([]);
-    setDisplayClearFilters(false);
-  };
+  // TODO: Remove this if not needed
+  // const handleClearFilters = () => {
+  //   setFilterRequest({ categories: {} });
+  //   setFilters([]);
+  //   setSelectedCategories([]);
+  //   setDisplayClearFilters(false);
+  // };
 
   useEffect(() => {
     const newFilter = filters[filters.length - 1];
     if (!newFilter) return;
 
-    if (filters.length > 1) setDisplayClearFilters(true);
-    else setDisplayClearFilters(false);
+    // TODO: Remove this if not needed
+    // if (filters.length > 1) setDisplayClearFilters(true);
+    // else setDisplayClearFilters(false);
 
     // add new filter to filter request
     setFilterRequest((prevState) => {
