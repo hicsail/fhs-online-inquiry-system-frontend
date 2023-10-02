@@ -10,8 +10,17 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
+  IconButton,
   Paper,
-  TextField
+  TextField,
+  Drawer,
+  Toolbar,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Tooltip
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
@@ -20,6 +29,10 @@ import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
 import { ExpandableChip } from '../components/ExpandableChip';
 import ClearIcon from '@mui/icons-material/Clear';
+import MenuIcon from '@mui/icons-material/Menu';
+import InfoIcon from '@mui/icons-material/Info';
+import AddIcon from '@mui/icons-material/Add';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
@@ -33,11 +46,18 @@ export const DashboardPage: FC = () => {
   const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} });
   const [loading, setLoading] = useState(false);
   const [displayClearFilters, setDisplayClearFilters] = useState(false);
+  const [openFilterSideBar, setFilterSideBar] = useState(false);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string | undefined>('');
 
   const [filters, setFilters] = useState<Filter[]>([]);
+
+  // Filter side bar handler
+  const handleFilterSideBarOpen = () => setFilterSideBar(!openFilterSideBar);
+  const handleFilterSideBarClose = () => setFilterSideBar(false);
+
+  // Filter objects
 
   // dialog states
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -74,13 +94,28 @@ export const DashboardPage: FC = () => {
     }
   };
 
-  const handleAddFilter = (_event: any, newValue: string[]) => {
+  // add another handleAddFilter for autocomplete. Code would be the original
+  const handleAddFilterAutocomplete = (_event: any, newValue: string[]) => {
     setSelectedCategories(newValue);
 
     // add new filter UI element to filters which will be rendered as chips
     setFilters((prevState) => {
       const newState = [...prevState];
       const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue[newValue.length - 1]);
+      if (newFilter) newState.push(newFilter);
+      return newState;
+    });
+  };
+
+  const handleAddFilter = (newValue: string) => {
+    setSelectedCategories((prevState) => {
+      return [...prevState, newValue];
+    });
+
+    // add new filter UI element to filters which will be rendered as chips
+    setFilters((prevState) => {
+      const newState = [...prevState];
+      const newFilter = brainDataFilters.find((filter) => filter.variableName === newValue);
       if (newFilter) newState.push(newFilter);
       return newState;
     });
@@ -156,9 +191,13 @@ export const DashboardPage: FC = () => {
   }, [filters, selectedCategories]);
 
   return (
-    <Paper sx={{ width: 'fit-content', maxWidth: '100%' }}>
-      <Box display="flex" flexDirection="column" padding={4}>
-        <Box display="flex">
+    <>
+      <IconButton size="large" edge="start" color="inherit" aria-label="menu" onClick={handleFilterSideBarOpen}>
+        <MenuIcon />
+      </IconButton>
+      <Drawer anchor="right" open={openFilterSideBar} onClose={handleFilterSideBarClose}>
+        <Toolbar />
+        <Box sx={{ width: 400 }}>
           <Autocomplete
             disablePortal
             disableClearable
@@ -167,7 +206,7 @@ export const DashboardPage: FC = () => {
             renderTags={() => null}
             id="combo-box-demo"
             options={categories}
-            sx={{ minWidth: 300, width: 300, marginRight: 1 }}
+            sx={{ minWidth: 300, width: 300, marginLeft: 1, marginTop: 5 }}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -202,51 +241,79 @@ export const DashboardPage: FC = () => {
             }}
             inputValue={inputValue}
             value={selectedCategories}
-            onChange={handleAddFilter}
+            onChange={handleAddFilterAutocomplete}
           />
-          {displayClearFilters && (
-            <Button onClick={handleClearFilters} startIcon={<ClearIcon />} sx={{ marginRight: 1 }}>
-              Clear
-            </Button>
-          )}
-          <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
-            {filters.map((filter) => (
-              <ExpandableChip
-                key={filter.name}
-                filter={filter}
-                filterRequest={filterRequest}
-                label={`${filter.variableName}`}
-                applyFilter={changeFilter}
-                onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
-              />
+          <List>
+            {brainDataFilters.map((filter) => (
+              <ListItem key={filter.name} disablePadding>
+                <ListItemButton>
+                  <IconButton
+                    onClick={() => {
+                      handleAddFilter(filter.variableName);
+                    }}
+                    disabled={filters.includes(filter)}
+                  >
+                    {filters.includes(filter) ? <CheckBoxIcon /> : <AddIcon />}
+                  </IconButton>
+                  <ListItemText primary={filter.variableName} />
+                  <Tooltip title={filter.description}>
+                    <ListItemIcon>
+                      <InfoIcon />
+                    </ListItemIcon>
+                  </Tooltip>
+                </ListItemButton>
+              </ListItem>
             ))}
+          </List>
+        </Box>
+      </Drawer>
+      <Paper sx={{ width: 'fit-content', maxWidth: '100%' }}>
+        <Box display="flex" flexDirection="column" padding={4}>
+          <Box display="flex">
+            {displayClearFilters && (
+              <Button onClick={handleClearFilters} startIcon={<ClearIcon />} sx={{ marginRight: 1 }}>
+                Clear
+              </Button>
+            )}
+            <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
+              {filters.map((filter) => (
+                <ExpandableChip
+                  key={filter.name}
+                  filter={filter}
+                  filterRequest={filterRequest}
+                  label={`${filter.variableName}`}
+                  applyFilter={changeFilter}
+                  onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
+                />
+              ))}
+            </Box>
+          </Box>
+          <Divider sx={{ m: 2 }} />
+          <Box width="fit-content" minWidth={600} maxWidth="100%" maxHeight="100%">
+            <Box>
+              <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
+                <CircularProgress color="inherit" />
+              </Backdrop>
+              <SummaryTable name="Brain Tissue Analytics" data={data} />
+            </Box>
+            <Box display="flex" justifyContent="flex-end" paddingTop="1rem">
+              <Button variant="contained" onClick={handleApplyFilters}>
+                Apply Filters
+              </Button>
+            </Box>
           </Box>
         </Box>
-        <Divider sx={{ m: 2 }} />
-        <Box width="fit-content" minWidth={600} maxWidth="100%" maxHeight="100%">
-          <Box>
-            <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
-              <CircularProgress color="inherit" />
-            </Backdrop>
-            <SummaryTable name="Brain Tissue Analytics" data={data} />
-          </Box>
-          <Box display="flex" justifyContent="flex-end" paddingTop="1rem">
-            <Button variant="contained" onClick={handleApplyFilters}>
-              Apply Filters
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{dialogContent}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Close</Button>
-        </DialogActions>
-      </Dialog>
-    </Paper>
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>{dialogContent}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDialogOpen(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
+      </Paper>
+    </>
   );
 };
 
