@@ -98,7 +98,7 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
   }, [checked]);
 
   return (
-    <Paper sx={{padding:5}}>
+    <Paper sx={{ padding: 5 }}>
       <Box display="flex" marginBottom="1rem">
         <Box display="flex" width={300}>
           <Typography variant="h6" textAlign="left">
@@ -152,19 +152,19 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
           </TableBody>
         </Table>
       </TableContainer>
-      <Divider light/>
+      <Divider light />
       <Box marginLeft="auto" marginTop={5}>
-          <ButtonGroup>
-            <Button variant="contained" sx={[{marginRight:20, color: 'black', bgcolor:'lightgray'}, {'&:hover': {bgcolor: 'white'}}]}>
-              <CSVLink data={csvData} filename={`${props.name}.csv`} style={{ color: 'inherit' }}>
-                Donwload CSV
-              </CSVLink>
-            </Button>
-            <Button variant="contained" onClick={handleExportToJSON} sx={[{color: 'black', bgcolor:'lightgray'}, {'&:hover': {bgcolor: 'white'}}]} >
-              Download JSON
-            </Button>
-          </ButtonGroup>
-        </Box>
+        <ButtonGroup>
+          <Button variant="contained" sx={[{ marginRight: 20, color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+            <CSVLink data={csvData} filename={`${props.name}.csv`} style={{ color: 'inherit' }}>
+              Donwload CSV
+            </CSVLink>
+          </Button>
+          <Button variant="contained" onClick={handleExportToJSON} sx={[{ color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+            Download JSON
+          </Button>
+        </ButtonGroup>
+      </Box>
     </Paper>
   );
 };
