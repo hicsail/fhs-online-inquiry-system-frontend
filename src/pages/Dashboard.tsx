@@ -290,6 +290,7 @@ export const DashboardPage: FC = () => {
                     <TableSliderFilter
                       filterName={filter.name}
                       variableName={filter.variableName}
+                      description={filter.description}
                       npCatagory={filter.npCategory}
                       maxValue={filter.max}
                       minValue={filter.min}
@@ -301,6 +302,7 @@ export const DashboardPage: FC = () => {
                     <TableOptionFilter
                       filterName={filter.name}
                       variableName={filter.variableName}
+                      description={filter.description}
                       npCatagory={filter.npCategory}
                       optionType={filter.optionType}
                       options={filter.options}

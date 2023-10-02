@@ -4,6 +4,7 @@ import {
   FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -14,13 +15,16 @@ import {
   RadioGroup,
   Select,
   SelectChangeEvent,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
+import InfoIcon from '@mui/icons-material/Info';
 
 interface TableOptionFilterProps {
   filterName: string;
   variableName: string;
+  description: string;
   optionType: 'radio' | 'select' | 'checkbox';
   options: { [key: string]: number };
   npCatagory: boolean;
@@ -60,7 +64,14 @@ export const TableOptionFilter: FC<TableOptionFilterProps> = (props) => {
     <Box paddingX={5} paddingY={1} width="80%">
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <Typography textAlign="start">{props.variableName}</Typography>
+          <Typography textAlign="start">
+            {props.variableName}
+            <Tooltip title={props.description}>
+              <IconButton size="small">
+                <InfoIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Typography>
         </Grid>
         <Grid item xs={6} md={8}>
           <FormControl fullWidth>
