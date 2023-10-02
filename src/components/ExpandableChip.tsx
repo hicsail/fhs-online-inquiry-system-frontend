@@ -82,6 +82,7 @@ export const ExpandableChip: FC<ExpandableChipProps> = (props) => {
             <TableSliderFilter
               filterName={filter.name}
               variableName={filter.variableName}
+              description=""
               npCatagory={filter.npCategory}
               maxValue={filter.max}
               minValue={filter.min}
@@ -93,6 +94,7 @@ export const ExpandableChip: FC<ExpandableChipProps> = (props) => {
             <TableOptionFilter
               filterName={filter.name}
               variableName={filter.variableName}
+              description=""
               npCatagory={filter.npCategory}
               optionType={filter.optionType}
               options={filter.options}
