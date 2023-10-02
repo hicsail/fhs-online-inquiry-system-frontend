@@ -174,51 +174,6 @@ export const DashboardPage: FC = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Autocomplete
-              disablePortal
-              disableClearable
-              multiple
-              size="small"
-              renderTags={() => null}
-              id="combo-box-demo"
-              options={categories}
-              sx={{ minWidth: 300, width: 300, marginRight: 1 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Filters"
-                  onKeyDown={(event: KeyboardEvent) => {
-                    if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
-                  }}
-                />
-              )}
-              renderOption={(props, option) => {
-                return (
-                  <li {...props} aria-selected="false">
-                    {option}
-                  </li>
-                );
-              }}
-              filterOptions={() => {
-                const filtered = categories.filter((option) => {
-                  return !selectedCategories.includes(option);
-                });
-
-                return filtered;
-              }}
-              ListboxProps={{
-                style: {
-                  textAlign: 'start',
-                  maxHeight: '20vh'
-                }
-              }}
-              onInputChange={(_event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
-              inputValue={inputValue}
-              value={selectedCategories}
-              onChange={handleAddFilter}
-            />
             {filters.map((filter, index) => {
               const filterValues = filter.npCategory ? (filterRequest.categories[filter.name] as number[]) : (filterRequest[filter.name] as number[]);
 
