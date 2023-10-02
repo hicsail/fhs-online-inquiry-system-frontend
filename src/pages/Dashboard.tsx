@@ -20,7 +20,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Tooltip
+  Tooltip,
+  Modal
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
@@ -33,6 +34,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import InfoIcon from '@mui/icons-material/Info';
 import AddIcon from '@mui/icons-material/Add';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+
 
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
@@ -66,6 +68,7 @@ export const DashboardPage: FC = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogContent, setDialogContent] = useState<string>('');
+  const [tableDialogOpen, setTableDialogOpen] = useState<boolean>(false);
 
   const changeFilter = (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => {
     if (removeFilter) {
@@ -147,6 +150,7 @@ export const DashboardPage: FC = () => {
 
     if (response.status === 201) {
       setData(response.data);
+      setTableDialogOpen(true);
     } else if (response.status === 206) {
       setDialogOpen(true);
       setDialogTitle('Failed to retrieve summary data');
@@ -295,7 +299,6 @@ export const DashboardPage: FC = () => {
               <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
                 <CircularProgress color="inherit" />
               </Backdrop>
-              <SummaryTable name="Brain Tissue Analytics" data={data} />
             </Box>
             <Box display="flex" justifyContent="flex-end" paddingTop="1rem">
               <Button variant="contained" onClick={handleApplyFilters}>
@@ -304,6 +307,14 @@ export const DashboardPage: FC = () => {
             </Box>
           </Box>
         </Box>
+
+        {/* Table dialog */}
+        <Modal open={tableDialogOpen} onClose={() => setTableDialogOpen(false)}>
+          <Box sx={{position: 'absolute', top:'30%', left:'25%', right: 'auto', bottom: 'auto', width:'50%', height: '50%'}}>
+            <SummaryTable name="Brain Tissue Analytics" data={data} />
+          </Box>
+        </Modal>
+
         <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogContent>
