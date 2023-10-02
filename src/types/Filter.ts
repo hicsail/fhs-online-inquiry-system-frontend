@@ -26,6 +26,7 @@ export type Filter =
       min: number;
       step?: number;
       minDistance?: number;
+      description: string;
     }
   | {
       type: 'option';
@@ -34,15 +35,16 @@ export type Filter =
       npCategory: boolean;
       optionType: 'radio' | 'select' | 'checkbox';
       options: { [key: string]: number };
+      description: string;
     };
 
 export const brainDataFilters: Filter[] = [
-  { name: 'age_core1', variableName: 'Age Range', type: 'slider', npCategory: false, max: 100, min: 0 },
-  { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', npCategory: false, max: 160, min: 0 },
-  { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 100, min: 0 },
-  { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', npCategory: false, max: 100, min: 0 },
-  { name: 'npfrotispre', variableName: 'Frozen tissue present', type: 'option', npCategory: true, optionType: 'radio', options: { Right: 1, Left: 2, NA: 3 } },
-  { name: 'npfix', variableName: 'Fixative', type: 'option', npCategory: true, optionType: 'radio', options: { Formalin: 1, Paraformaldehyde: 2, Other: 7 } },
+  { name: 'age_core1', variableName: 'Age Range', type: 'slider', npCategory: false, max: 100, min: 0, description: 'Age description' },
+  { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', npCategory: false, max: 160, min: 0, description: 'Postmortem Hours Description' },
+  { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 100, min: 0, description: 'Age of death description' },
+  { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', npCategory: false, max: 100, min: 0, description: 'RNA Integrity Description' },
+  { name: 'npfrotispre', variableName: 'Frozen tissue present', type: 'option', npCategory: true, optionType: 'radio', options: { Right: 1, Left: 2, NA: 3 }, description: 'Frozen Tissue Present Description' },
+  { name: 'npfix', variableName: 'Fixative', type: 'option', npCategory: true, optionType: 'radio', options: { Formalin: 1, Paraformaldehyde: 2, Other: 7 }, description: 'Fixative description' },
   {
     name: 'npinf',
     variableName: 'Observed infarcts',
@@ -52,7 +54,8 @@ export const brainDataFilters: Filter[] = [
     options: {
       No: 0,
       Yes: 1
-    }
+    },
+    description: 'Observed Infarcts description'
   },
   {
     name: 'npftdt7',
@@ -63,7 +66,8 @@ export const brainDataFilters: Filter[] = [
     options: {
       No: 0,
       Yes: 1
-    }
+    },
+    description: 'CTE description'
   },
   {
     name: 'npavas',
@@ -78,7 +82,8 @@ export const brainDataFilters: Filter[] = [
       Severe: 3,
       'Not Assessed': 8,
       'Missing/Unknown': 9
-    }
+    },
+    description: 'Atherosclerosis severity description'
   },
   {
     name: 'pathmnd',
@@ -94,7 +99,8 @@ export const brainDataFilters: Filter[] = [
       'Yes (other)': 4,
       'Not Assessed': 8,
       'Missing/Unknown': 9
-    }
+    },
+    description: 'ALS description'
   },
   {
     name: 'pathad',
@@ -105,7 +111,8 @@ export const brainDataFilters: Filter[] = [
     options: {
       No: 0,
       Yes: 1
-    }
+    },
+    description: 'Derived AD dementia description'
   },
   {
     name: 'relatauo',
@@ -116,7 +123,8 @@ export const brainDataFilters: Filter[] = [
     options: {
       No: 0,
       Yes: 1
-    }
+    },
+    description: 'Age-related tauopathy'
   },
   {
     name: 'npftdtau',
@@ -127,7 +135,8 @@ export const brainDataFilters: Filter[] = [
     options: {
       No: 0,
       Yes: 1
-    }
+    },
+    description: 'FTLD pathology description'
   },
   {
     name: 'npftdtdp',
@@ -138,7 +147,8 @@ export const brainDataFilters: Filter[] = [
     options: {
       No: 0,
       Yes: 1
-    }
+    },
+    description: 'TDP-43 description'
   },
   {
     name: 'nphipscl',
@@ -152,6 +162,7 @@ export const brainDataFilters: Filter[] = [
       Bilateral: 2,
       Present: 3,
       'Missing/Unknown': 9
-    }
+    },
+    description: "Hippocampal sclerosis description"
   }
 ];
