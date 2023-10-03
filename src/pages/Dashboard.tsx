@@ -1,9 +1,10 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Autocomplete,
-  Backdrop,
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -11,8 +12,8 @@ import {
   DialogTitle,
   Divider,
   IconButton,
-  Paper,
   TextField,
+  Typography,
   Drawer,
   Toolbar,
   List,
@@ -23,16 +24,17 @@ import {
   Tooltip
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
-import { SummaryTable } from '../components/SummaryTable/SummaryTable';
-import { useLoaderData } from 'react-router-dom';
+// import { useLoaderData } from 'react-router-dom';
 import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
-import { ExpandableChip } from '../components/ExpandableChip';
-import ClearIcon from '@mui/icons-material/Clear';
 import MenuIcon from '@mui/icons-material/Menu';
 import InfoIcon from '@mui/icons-material/Info';
 import AddIcon from '@mui/icons-material/Add';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CloseIcon from '@mui/icons-material/Close';
+import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
+import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
@@ -42,10 +44,11 @@ type FilterRequest = {
 };
 
 export const DashboardPage: FC = () => {
-  const [data, setData] = useState(useLoaderData());
+  // TODO: Uncomment this for table
+  // const [data, setData] = useState(useLoaderData());
   const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} });
-  const [loading, setLoading] = useState(false);
-  const [displayClearFilters, setDisplayClearFilters] = useState(false);
+  // TODO: Remove this if not needed
+  // const [displayClearFilters, setDisplayClearFilters] = useState(false);
   const [openFilterSideBar, setFilterSideBar] = useState(false);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -56,8 +59,6 @@ export const DashboardPage: FC = () => {
   // Filter side bar handler
   const handleFilterSideBarOpen = () => setFilterSideBar(!openFilterSideBar);
   const handleFilterSideBarClose = () => setFilterSideBar(false);
-
-  // Filter objects
 
   // dialog states
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -137,11 +138,11 @@ export const DashboardPage: FC = () => {
   };
 
   const handleApplyFilters = async () => {
-    setLoading(true);
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`, filterRequest);
 
     if (response.status === 201) {
-      setData(response.data);
+      // TODO: Uncomment this for table
+      // setData(response.data);
     } else if (response.status === 206) {
       setDialogOpen(true);
       setDialogTitle('Failed to retrieve summary data');
@@ -151,23 +152,23 @@ export const DashboardPage: FC = () => {
       setDialogTitle('Something went wrong');
       setDialogContent(JSON.stringify(response.data));
     }
-
-    setLoading(false);
   };
 
-  const handleClearFilters = () => {
-    setFilterRequest({ categories: {} });
-    setFilters([]);
-    setSelectedCategories([]);
-    setDisplayClearFilters(false);
-  };
+  // TODO: Remove this if not needed
+  // const handleClearFilters = () => {
+  //   setFilterRequest({ categories: {} });
+  //   setFilters([]);
+  //   setSelectedCategories([]);
+  //   setDisplayClearFilters(false);
+  // };
 
   useEffect(() => {
     const newFilter = filters[filters.length - 1];
     if (!newFilter) return;
 
-    if (filters.length > 1) setDisplayClearFilters(true);
-    else setDisplayClearFilters(false);
+    // TODO: Remove this if not needed
+    // if (filters.length > 1) setDisplayClearFilters(true);
+    // else setDisplayClearFilters(false);
 
     // add new filter to filter request
     setFilterRequest((prevState) => {
@@ -267,52 +268,69 @@ export const DashboardPage: FC = () => {
           </List>
         </Box>
       </Drawer>
-      <Paper sx={{ width: 'fit-content', maxWidth: '100%' }}>
-        <Box display="flex" flexDirection="column" padding={4}>
-          <Box display="flex">
-            {displayClearFilters && (
-              <Button onClick={handleClearFilters} startIcon={<ClearIcon />} sx={{ marginRight: 1 }}>
-                Clear
-              </Button>
-            )}
-            <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
-              {filters.map((filter) => (
-                <ExpandableChip
-                  key={filter.name}
-                  filter={filter}
-                  filterRequest={filterRequest}
-                  label={`${filter.variableName}`}
-                  applyFilter={changeFilter}
-                  onDelete={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)}
-                />
-              ))}
-            </Box>
-          </Box>
-          <Divider sx={{ m: 2 }} />
-          <Box width="fit-content" minWidth={600} maxWidth="100%" maxHeight="100%">
-            <Box>
-              <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 9999 }}>
-                <CircularProgress color="inherit" />
-              </Backdrop>
-              <SummaryTable name="Brain Tissue Analytics" data={data} />
-            </Box>
-            <Box display="flex" justifyContent="flex-end" paddingTop="1rem">
-              <Button variant="contained" onClick={handleApplyFilters}>
-                Apply Filters
-              </Button>
-            </Box>
-          </Box>
+      <Box display="flex" flexDirection="column" padding={4}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h5" component="h5">
+              Current Filter
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            {filters.map((filter, index) => {
+              const filterValues = filter.npCategory ? (filterRequest.categories[filter.name] as number[]) : (filterRequest[filter.name] as number[]);
+
+              return (
+                <div key={filter.name}>
+                  <Box textAlign="end">
+                    <IconButton onClick={() => handleRemoveFilter(filter.name, filter.variableName, filter.npCategory)} sx={{ height: '30px', width: '30px' }}>
+                      <CloseIcon sx={{ height: '20px', width: '20px' }} />
+                    </IconButton>
+                  </Box>
+                  {filter.type === 'slider' ? (
+                    <TableSliderFilter
+                      filterName={filter.name}
+                      variableName={filter.variableName}
+                      description={filter.description}
+                      npCatagory={filter.npCategory}
+                      maxValue={filter.max}
+                      minValue={filter.min}
+                      step={filter.step}
+                      value={filterValues}
+                      applyFilter={changeFilter}
+                    />
+                  ) : (
+                    <TableOptionFilter
+                      filterName={filter.name}
+                      variableName={filter.variableName}
+                      description={filter.description}
+                      npCatagory={filter.npCategory}
+                      optionType={filter.optionType}
+                      options={filter.options}
+                      values={filterValues}
+                      applyFilter={changeFilter}
+                    />
+                  )}
+                  {index < filters.length - 1 && <Divider sx={{ m: 2 }} />}
+                </div>
+              );
+            })}
+          </AccordionDetails>
+        </Accordion>
+        <Box width="fit-content" minWidth={600} maxWidth="100%" maxHeight="100%">
+          <Button variant="contained" onClick={handleApplyFilters}>
+            Apply Filters
+          </Button>
         </Box>
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-          <DialogTitle>{dialogTitle}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{dialogContent}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDialogOpen(false)}>Close</Button>
-          </DialogActions>
-        </Dialog>
-      </Paper>
+      </Box>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{dialogContent}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
