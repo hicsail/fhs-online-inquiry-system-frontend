@@ -29,8 +29,6 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
   const open = Boolean(anchorEl);
   const [checked, setChecked] = useState<number[]>([0, 1, 2]);
 
-  const c = props.closeTable;
-
   const [displayedHeaderCells, setDisplayedHeaderCells] = useState<HeaderCell[]>([headerCells[0], headerCells[1], headerCells[2]]);
   const displayedDataCells = useMemo(() => {
     const newDisplayedDataCells: Data[] = [];
@@ -167,8 +165,8 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
             Download JSON
           </Button>
         </ButtonGroup>
-        <ButtonGroup>
-          <Button variant="contained" onClick={props.closeTable} sx={[{ marginLeft: 76, color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+        <ButtonGroup sx={{ marginLeft: 'auto' }}>
+          <Button variant="contained" onClick={props.closeTable} sx={[{ color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
             DISMISS
           </Button>
         </ButtonGroup>
