@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 
 import { SortableTableHeader } from './SortableTableHeader';
 import { headerCells, Data, permanentCells, HeaderCell } from '../../types/Data';
-import { Box, Button, ButtonGroup, Checkbox, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, Typography } from '@mui/material';
+import { Box, Button, ButtonGroup, Checkbox, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, Typography, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { CSVLink } from 'react-csv';
 import AddIcon from '@mui/icons-material/Add';
@@ -19,6 +19,7 @@ type Order = 'asc' | 'desc';
 interface SummaryTableProps {
   name: string;
   data: any;
+  closeTable: () => void;
 }
 
 export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) => {
@@ -98,7 +99,7 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
   }, [checked]);
 
   return (
-    <>
+    <Paper sx={{ padding: 5 }}>
       <Box display="flex" marginBottom="1rem">
         <Box display="flex" width={300}>
           <Typography variant="h6" textAlign="left">
@@ -121,18 +122,6 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
               </List>
             </Menu>
           </Typography>
-        </Box>
-        <Box marginLeft="auto">
-          <ButtonGroup>
-            <Button variant="contained" color="success">
-              <CSVLink data={csvData} filename={`${props.name}.csv`} style={{ color: 'inherit' }}>
-                .CSV
-              </CSVLink>
-            </Button>
-            <Button variant="contained" color="warning" onClick={handleExportToJSON}>
-              .JSON
-            </Button>
-          </ButtonGroup>
         </Box>
       </Box>
       <TableContainer
@@ -164,7 +153,25 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+      <Divider light />
+      <Box marginLeft="auto" marginTop={5} display={'flex'}>
+        <ButtonGroup>
+          <Button variant="contained" sx={[{ marginRight: 5, color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+            <CSVLink data={csvData} filename={`${props.name}.csv`} style={{ color: 'inherit' }}>
+              Download CSV
+            </CSVLink>
+          </Button>
+          <Button variant="contained" onClick={handleExportToJSON} sx={[{ color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+            Download JSON
+          </Button>
+        </ButtonGroup>
+        <ButtonGroup sx={{ marginLeft: 'auto' }}>
+          <Button variant="contained" onClick={props.closeTable} sx={[{ color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+            DISMISS
+          </Button>
+        </ButtonGroup>
+      </Box>
+    </Paper>
   );
 };
 

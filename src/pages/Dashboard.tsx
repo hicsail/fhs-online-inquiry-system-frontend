@@ -21,10 +21,11 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Tooltip
+  Tooltip,
+  Modal
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
-// import { useLoaderData } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -33,6 +34,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
+import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
 import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
 
@@ -44,16 +46,11 @@ type FilterRequest = {
 };
 
 export const DashboardPage: FC = () => {
-  // TODO: Uncomment this for table
-  // const [data, setData] = useState(useLoaderData());
+  const [data, setData] = useState(useLoaderData());
   const [filterRequest, setFilterRequest] = useState<FilterRequest>({ categories: {} });
-  // TODO: Remove this if not needed
-  // const [displayClearFilters, setDisplayClearFilters] = useState(false);
   const [openFilterSideBar, setFilterSideBar] = useState(false);
-
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string | undefined>('');
-
   const [filters, setFilters] = useState<Filter[]>([]);
 
   // Filter side bar handler
@@ -64,6 +61,7 @@ export const DashboardPage: FC = () => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogContent, setDialogContent] = useState<string>('');
+  const [tableDialogOpen, setTableDialogOpen] = useState<boolean>(false);
 
   const changeFilter = (name: string, value: any, removeFilter: boolean, npCatagory: boolean) => {
     if (removeFilter) {
@@ -141,8 +139,8 @@ export const DashboardPage: FC = () => {
     const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/brain-data`, filterRequest);
 
     if (response.status === 201) {
-      // TODO: Uncomment this for table
-      // setData(response.data);
+      setData(response.data);
+      setTableDialogOpen(true);
     } else if (response.status === 206) {
       setDialogOpen(true);
       setDialogTitle('Failed to retrieve summary data');
@@ -154,21 +152,9 @@ export const DashboardPage: FC = () => {
     }
   };
 
-  // TODO: Remove this if not needed
-  // const handleClearFilters = () => {
-  //   setFilterRequest({ categories: {} });
-  //   setFilters([]);
-  //   setSelectedCategories([]);
-  //   setDisplayClearFilters(false);
-  // };
-
   useEffect(() => {
     const newFilter = filters[filters.length - 1];
     if (!newFilter) return;
-
-    // TODO: Remove this if not needed
-    // if (filters.length > 1) setDisplayClearFilters(true);
-    // else setDisplayClearFilters(false);
 
     // add new filter to filter request
     setFilterRequest((prevState) => {
@@ -217,13 +203,6 @@ export const DashboardPage: FC = () => {
                 }}
               />
             )}
-            renderOption={(props, option) => {
-              return (
-                <li {...props} aria-selected="false">
-                  {option}
-                </li>
-              );
-            }}
             filterOptions={() => {
               const filtered = categories.filter((option) => {
                 return !selectedCategories.includes(option);
@@ -322,6 +301,19 @@ export const DashboardPage: FC = () => {
           </Button>
         </Box>
       </Box>
+
+      {/* Table dialog */}
+      <Modal open={tableDialogOpen} onClose={() => setTableDialogOpen(false)}>
+        <Box sx={{ position: 'absolute', top: '30%', left: '25%', right: 'auto', bottom: 'auto', width: '50%', height: '50%' }}>
+          <SummaryTable
+            name="Brain Tissue Analytics"
+            data={data}
+            closeTable={() => {
+              setTableDialogOpen(false);
+            }}
+          />
+        </Box>
+      </Modal>
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
