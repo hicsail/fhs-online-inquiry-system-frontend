@@ -302,7 +302,13 @@ export const DashboardPage: FC = () => {
         {/* Table dialog */}
         <Modal open={tableDialogOpen} onClose={() => setTableDialogOpen(false)}>
           <Box sx={{ position: 'absolute', top: '30%', left: '25%', right: 'auto', bottom: 'auto', width: '50%', height: '50%' }}>
-            <SummaryTable name="Brain Tissue Analytics" data={data} />
+            <SummaryTable
+              name="Brain Tissue Analytics"
+              data={data}
+              closeTable={() => {
+                setTableDialogOpen(false);
+              }}
+            />
           </Box>
         </Modal>
 

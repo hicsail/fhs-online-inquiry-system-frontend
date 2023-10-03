@@ -19,6 +19,7 @@ type Order = 'asc' | 'desc';
 interface SummaryTableProps {
   name: string;
   data: any;
+  closeTable: () => void;
 }
 
 export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) => {
@@ -27,6 +28,8 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [checked, setChecked] = useState<number[]>([0, 1, 2]);
+
+  const c = props.closeTable;
 
   const [displayedHeaderCells, setDisplayedHeaderCells] = useState<HeaderCell[]>([headerCells[0], headerCells[1], headerCells[2]]);
   const displayedDataCells = useMemo(() => {
@@ -153,15 +156,20 @@ export const SummaryTable: FC<SummaryTableProps> = (props: SummaryTableProps) =>
         </Table>
       </TableContainer>
       <Divider light />
-      <Box marginLeft="auto" marginTop={5}>
+      <Box marginLeft="auto" marginTop={5} display={'flex'}>
         <ButtonGroup>
-          <Button variant="contained" sx={[{ marginRight: 20, color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+          <Button variant="contained" sx={[{ marginRight: 5, color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
             <CSVLink data={csvData} filename={`${props.name}.csv`} style={{ color: 'inherit' }}>
-              Donwload CSV
+              Download CSV
             </CSVLink>
           </Button>
           <Button variant="contained" onClick={handleExportToJSON} sx={[{ color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
             Download JSON
+          </Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button variant="contained" onClick={props.closeTable} sx={[{ marginLeft: 76, color: 'black', bgcolor: 'lightgray' }, { '&:hover': { bgcolor: 'white' } }]}>
+            DISMISS
           </Button>
         </ButtonGroup>
       </Box>
