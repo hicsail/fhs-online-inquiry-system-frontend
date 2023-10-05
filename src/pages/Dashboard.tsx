@@ -1,7 +1,4 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Autocomplete,
   Box,
   Button,
@@ -22,7 +19,8 @@ import {
   ListItemIcon,
   ListItemText,
   Tooltip,
-  Modal
+  Modal,
+  Paper
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
@@ -32,11 +30,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import InfoIcon from '@mui/icons-material/Info';
 import AddIcon from '@mui/icons-material/Add';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
 import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
+import { BrainDataIntro } from '../components/SummaryTable/BrainDataIntro';
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
@@ -187,59 +185,7 @@ export const DashboardPage: FC = () => {
         </IconButton>
       </Box>
       {/* this might need to be smaller to be closer to figma design */}
-      <Box display={'flex'} flexDirection={'column'} bgcolor={'white'} textAlign={'left'} sx={{ minHeight: '25%', maxHeight: '50%', minWidth: '50%', maxWidth: '90%' }}>
-        <Typography variant="h4" color={'black'}>
-          Introduction
-        </Typography>
-        <Divider sx={{ width: '80%', marginLeft: 1 }} />
-        <Typography variant="body1" color={'black'}>
-          The purpose of this dataset is to enable researchers to inquiry brain bio-sample availability at the Framingham Heart Study archive.
-          <br />
-          You can use the filters provided to narrow down the criteria of the sample and discover whether there are sample that fit your requirements and if there are, how many
-          unique samples are available.
-        </Typography>
-        <Typography variant="h4" color={'black'}>
-          Instructions
-        </Typography>
-        <Divider sx={{ width: '80%', marginLeft: 1 }} />
-        <Typography variant="body1" color={'black'}>
-          Using this inquiry system is very simple and intuitive. In essence, you would choose the criteria of the biosample by applying the filters that are available for this
-          dataset. Additional information regarding the filters can be found by hovering over the information icon beside each filter. To achieve a summary of the inquiry based on
-          the filters, you can follow the following steps
-        </Typography>
-        <ol>
-          <li key={1}>
-            <Typography variant="body1" color={'black'}>
-              Click "All Filters" on the top right of the screen to see every available filter for this dataset.
-            </Typography>
-          </li>
-          <li key={2}>
-            <Typography variant="body1" color={'black'}>
-              Use the '+' icon to add filter and then click anywhere to close the side bar.
-            </Typography>
-          </li>
-          <li key={3}>
-            <Typography variant="body1" color={'black'}>
-              Adjust the values for individual filters under "Current Filters"
-            </Typography>
-          </li>
-          <li key={4}>
-            <Typography variant="body1" color={'black'}>
-              Click "Apply Filter" to send the request. A table will pop up with the result
-            </Typography>
-          </li>
-          <li key={5}>
-            <Typography variant="body1" color={'black'}>
-              Additional data columns can be added by clicking the '+' on top of the table
-            </Typography>
-          </li>
-          <li key={6}>
-            <Typography variant="body1" color={'black'}>
-              Data are available for download in CSV or JSON format using the respective button. Click "DISMISS" when done
-            </Typography>
-          </li>
-        </ol>
-      </Box>
+      <BrainDataIntro />
       <Drawer anchor="right" open={openFilterSideBar} onClose={handleFilterSideBarClose}>
         <Toolbar />
         <Box sx={{ width: 400 }}>
@@ -249,7 +195,6 @@ export const DashboardPage: FC = () => {
             multiple
             size="small"
             renderTags={() => null}
-            id="combo-box-demo"
             options={categories}
             sx={{ minWidth: 300, width: 300, marginLeft: 1, marginTop: 5 }}
             renderInput={(params) => (
@@ -261,12 +206,14 @@ export const DashboardPage: FC = () => {
                 }}
               />
             )}
-            filterOptions={() => {
-              const filtered = categories.filter((option) => {
-                return !selectedCategories.includes(option);
-              });
+            renderOption={(props, option) => {
+              if (selectedCategories.includes(option)) return null;
 
-              return filtered;
+              return (
+                <li {...props} aria-selected="false">
+                  {option}
+                </li>
+              );
             }}
             ListboxProps={{
               style: {
@@ -311,13 +258,13 @@ export const DashboardPage: FC = () => {
             Apply Filters
           </Button>
         </Box>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Paper sx={{ paddingX: 2, paddingY: 1 }}>
+          <Box padding={2} textAlign="start">
             <Typography variant="h5" component="h5">
               Current Filter
             </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
+          </Box>
+          <Box>
             {filters.map((filter, index) => {
               const filterValues = filter.npCategory ? (filterRequest.categories[filter.name] as number[]) : (filterRequest[filter.name] as number[]);
 
@@ -356,8 +303,8 @@ export const DashboardPage: FC = () => {
                 </div>
               );
             })}
-          </AccordionDetails>
-        </Accordion>
+          </Box>
+        </Paper>
       </Box>
 
       {/* Table dialog */}
