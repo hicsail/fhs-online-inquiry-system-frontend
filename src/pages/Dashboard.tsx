@@ -195,7 +195,6 @@ export const DashboardPage: FC = () => {
             multiple
             size="small"
             renderTags={() => null}
-            id="combo-box-demo"
             options={categories}
             sx={{ minWidth: 300, width: 300, marginLeft: 1, marginTop: 5 }}
             renderInput={(params) => (
@@ -207,12 +206,14 @@ export const DashboardPage: FC = () => {
                 }}
               />
             )}
-            filterOptions={() => {
-              const filtered = categories.filter((option) => {
-                return !selectedCategories.includes(option);
-              });
+            renderOption={(props, option) => {
+              if (selectedCategories.includes(option)) return null;
 
-              return filtered;
+              return (
+                <li {...props} aria-selected="false">
+                  {option}
+                </li>
+              );
             }}
             ListboxProps={{
               style: {
