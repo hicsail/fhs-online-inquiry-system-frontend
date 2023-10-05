@@ -22,7 +22,8 @@ import {
   ListItemIcon,
   ListItemText,
   Tooltip,
-  Modal
+  Modal,
+  Paper
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
@@ -311,13 +312,13 @@ export const DashboardPage: FC = () => {
             Apply Filters
           </Button>
         </Box>
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Paper sx={{ paddingX: 2, paddingY: 1 }}>
+          <Box padding={2} textAlign="start">
             <Typography variant="h5" component="h5">
               Current Filter
             </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
+          </Box>
+          <Box>
             {filters.map((filter, index) => {
               const filterValues = filter.npCategory ? (filterRequest.categories[filter.name] as number[]) : (filterRequest[filter.name] as number[]);
 
@@ -356,8 +357,8 @@ export const DashboardPage: FC = () => {
                 </div>
               );
             })}
-          </AccordionDetails>
-        </Accordion>
+          </Box>
+        </Paper>
       </Box>
 
       {/* Table dialog */}
