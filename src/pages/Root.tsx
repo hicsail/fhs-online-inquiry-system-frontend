@@ -1,19 +1,14 @@
 import { AppBar, Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material';
-import { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import StorageIcon from '@mui/icons-material/Storage';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Footer } from '../components/Footer';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import InfoIcon from '@mui/icons-material/Info';
+import CallIcon from '@mui/icons-material/Call';
 
 export function RootLayout() {
-  const [footerOpen, setFooterOpen] = useState(false);
-
-  const datasets = [{ displayedName: 'Brain Data', name: 'brain-data' }];
-
-  // handler for footer
-  const handleFooterOpen = () => setFooterOpen(true);
-  const handleFooterClose = () => setFooterOpen(false);
+  const datasets = [{ displayedName: 'Brain Tissue', name: 'brain-tissue' }];
 
   return (
     <>
@@ -21,7 +16,7 @@ export function RootLayout() {
         <Toolbar>
           <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             <Typography variant="h6" component="div">
-              Brain Aging Program Data
+              FHS-BAP Brain Data Portal: An Integrated Data Query System
             </Typography>
           </NavLink>
         </Toolbar>
@@ -53,6 +48,36 @@ export function RootLayout() {
                 </ListItemButton>
               </ListItem>
             ))}
+            <ListItem disablePadding>
+              <ListItemButton component={NavLink} to="#">
+                <ListItemIcon>
+                  <OndemandVideoIcon />
+                </ListItemIcon>
+                <ListItemText primary="Demo" />
+                <ChevronRightIcon />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton component={NavLink} to="about">
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText primary="About" />
+                <ChevronRightIcon />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton component={NavLink} to="contact">
+                <ListItemIcon>
+                  <CallIcon />
+                </ListItemIcon>
+                <ListItemText primary="Contact" />
+                <ChevronRightIcon />
+              </ListItemButton>
+            </ListItem>
           </List>
         </Box>
       </Drawer>
@@ -69,11 +94,6 @@ export function RootLayout() {
         }}
       >
         <Outlet />
-      </Box>
-      <Box position="absolute" bottom={0} left={0} height={20} width="100%" onMouseOver={handleFooterOpen}>
-        <Drawer anchor="bottom" variant="persistent" open={footerOpen} onMouseLeave={handleFooterClose}>
-          <Footer />
-        </Drawer>
       </Box>
     </>
   );
