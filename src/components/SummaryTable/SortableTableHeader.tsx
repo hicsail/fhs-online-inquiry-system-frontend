@@ -14,7 +14,7 @@ function SortableTableHeader(props: any) {
     <TableHead>
       <TableRow>
         {headerCells.map((headerCell: HeaderCell) => (
-          <TableCell key={headerCell.id} sortDirection={orderBy === headerCell.id ? order : false} sx={{ whiteSpace: 'nowrap', backgroundColor: 'rgba(224, 224, 224, 1)' }}>
+          <TableCell key={headerCell.id} sortDirection={orderBy === headerCell.id ? order : false} sx={{ paddingY: '8px', backgroundColor: 'rgba(224, 224, 224, 1)' }}>
             <TableSortLabel
               style={{ display: 'flex', flexDirection: 'row-reverse', fontWeight: 'bold' }}
               active={orderBy === headerCell.id}

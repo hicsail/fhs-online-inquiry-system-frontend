@@ -15,12 +15,12 @@ import {
   Toolbar,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
-  ListItemText,
   Tooltip,
   Modal,
-  Paper
+  Paper,
+  Switch,
+  FormControlLabel
 } from '@mui/material';
 import { FC, KeyboardEvent, useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
@@ -28,13 +28,11 @@ import axios from 'axios';
 import { Filter, brainDataFilters } from '../types/Filter';
 import MenuIcon from '@mui/icons-material/Menu';
 import InfoIcon from '@mui/icons-material/Info';
-import AddIcon from '@mui/icons-material/Add';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CloseIcon from '@mui/icons-material/Close';
 import { SummaryTable } from '../components/SummaryTable/SummaryTable';
 import { TableSliderFilter } from '../components/Filters/TableSliderFilter';
 import { TableOptionFilter } from '../components/Filters/TableOptionFilter';
-import { BrainDataIntro } from '../components/SummaryTable/BrainDataIntro';
+import { BrainDataIntro } from '../components/BrainDataIntro';
 
 const categories = brainDataFilters.map((filter) => filter.variableName);
 
@@ -177,84 +175,17 @@ export const DashboardPage: FC = () => {
 
   return (
     <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-      <Box display={'flex'} width={'100%'}>
-        {/* Change hover silhoutte */}
-        <IconButton size="large" edge="start" color="inherit" aria-label="menu" onClick={handleFilterSideBarOpen} sx={{ marginLeft: 'auto' }}>
-          <Typography marginRight={1}>All Filters</Typography>
-          <MenuIcon />
-        </IconButton>
-      </Box>
-      {/* this might need to be smaller to be closer to figma design */}
-      <BrainDataIntro />
-      <Drawer anchor="right" open={openFilterSideBar} onClose={handleFilterSideBarClose}>
-        <Toolbar />
-        <Box sx={{ width: 400 }}>
-          <Autocomplete
-            disablePortal
-            disableClearable
-            multiple
-            size="small"
-            renderTags={() => null}
-            options={categories}
-            sx={{ minWidth: 300, width: 300, marginLeft: 1, marginTop: 5 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Filters"
-                onKeyDown={(event: KeyboardEvent) => {
-                  if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
-                }}
-              />
-            )}
-            renderOption={(props, option) => {
-              if (selectedCategories.includes(option)) return null;
-
-              return (
-                <li {...props} aria-selected="false">
-                  {option}
-                </li>
-              );
-            }}
-            ListboxProps={{
-              style: {
-                textAlign: 'start',
-                maxHeight: '20vh'
-              }
-            }}
-            onInputChange={(_event, newInputValue) => {
-              setInputValue(newInputValue);
-            }}
-            inputValue={inputValue}
-            value={selectedCategories}
-            onChange={handleAddFilterAutocomplete}
-          />
-          <List>
-            {brainDataFilters.map((filter) => (
-              <ListItem key={filter.name} disablePadding>
-                <ListItemButton>
-                  <IconButton
-                    onClick={() => {
-                      handleAddFilter(filter.variableName);
-                    }}
-                    disabled={filters.includes(filter)}
-                  >
-                    {filters.includes(filter) ? <CheckBoxIcon /> : <AddIcon />}
-                  </IconButton>
-                  <ListItemText primary={filter.variableName} />
-                  <Tooltip title={filter.description}>
-                    <ListItemIcon>
-                      <InfoIcon />
-                    </ListItemIcon>
-                  </Tooltip>
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+      <Box display="flex">
+        <BrainDataIntro />
+        <Box whiteSpace="nowrap" marginLeft={2}>
+          <Button color="inherit" aria-label="menu" onClick={handleFilterSideBarOpen} sx={{ marginLeft: 'auto' }} startIcon={<MenuIcon />}>
+            All Filters
+          </Button>
         </Box>
-      </Drawer>
-      <Box display="flex" flexDirection="column" paddingTop={4} sx={{ minHeight: '20%', maxHeight: '50%', minWidth: '50%', maxWidth: '90%' }}>
+      </Box>
+      <Box display="flex" flexDirection="column" sx={{ minHeight: '20%', maxHeight: '50%', minWidth: '50%', maxWidth: '90%' }}>
         <Box display={'flex'} width="fit-content" minWidth={600} maxWidth="100%" maxHeight="100%" marginLeft={'auto'}>
-          <Button variant="contained" onClick={handleApplyFilters} sx={{ marginLeft: 'auto', marginBottom: 1 }}>
+          <Button variant="contained" onClick={handleApplyFilters} sx={{ marginLeft: 'auto', marginBottom: 2 }}>
             Apply Filters
           </Button>
         </Box>
@@ -307,9 +238,82 @@ export const DashboardPage: FC = () => {
         </Paper>
       </Box>
 
+      {/* Filter side bar */}
+      <Drawer anchor="right" open={openFilterSideBar} onClose={handleFilterSideBarClose}>
+        <Toolbar />
+        <Box width={350} paddingX={3}>
+          <Autocomplete
+            disablePortal
+            disableClearable
+            multiple
+            size="small"
+            renderTags={() => null}
+            options={categories}
+            sx={{ minWidth: 300, width: 300, marginLeft: 1, marginTop: 5 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Filters"
+                onKeyDown={(event: KeyboardEvent) => {
+                  if (event.key === 'Backspace' || event.key === 'Delete') event.stopPropagation();
+                }}
+              />
+            )}
+            renderOption={(props, option) => {
+              if (selectedCategories.includes(option)) return null;
+
+              return (
+                <li {...props} aria-selected="false">
+                  {option}
+                </li>
+              );
+            }}
+            ListboxProps={{
+              style: {
+                textAlign: 'start',
+                maxHeight: '20vh'
+              }
+            }}
+            onInputChange={(_event, newInputValue) => {
+              setInputValue(newInputValue);
+            }}
+            inputValue={inputValue}
+            value={selectedCategories}
+            onChange={handleAddFilterAutocomplete}
+          />
+          <List>
+            {brainDataFilters.map((filter) => (
+              <ListItem key={filter.name} sx={{ padding: '2px' }}>
+                <FormControlLabel
+                  label={
+                    <Typography variant="body1" lineHeight={1}>
+                      {filter.variableName}
+                    </Typography>
+                  }
+                  control={
+                    <Switch
+                      checked={filters.includes(filter)}
+                      onChange={(event) => {
+                        if (event.target.checked) handleAddFilter(filter.variableName);
+                        else handleRemoveFilter(filter.name, filter.variableName, filter.npCategory);
+                      }}
+                    />
+                  }
+                />
+                <Tooltip title={filter.description} sx={{ marginLeft: 'auto' }}>
+                  <ListItemIcon>
+                    <InfoIcon />
+                  </ListItemIcon>
+                </Tooltip>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+
       {/* Table dialog */}
       <Modal open={tableDialogOpen} onClose={() => setTableDialogOpen(false)}>
-        <Box sx={{ position: 'absolute', top: '30%', left: '25%', right: 'auto', bottom: 'auto', width: '50%', height: '50%' }}>
+        <Box sx={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', minWidth: '50%', maxWidth: '80%', height: '50%' }}>
           <SummaryTable
             name="Brain Tissue Analytics"
             data={data}

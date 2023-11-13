@@ -39,12 +39,27 @@ export type Filter =
     };
 
 export const brainDataFilters: Filter[] = [
-  { name: 'age_core1', variableName: 'Age Range', type: 'slider', npCategory: false, max: 100, min: 0, description: 'Age description' },
   { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', npCategory: false, max: 160, min: 0, description: 'Postmortem Hours Description' },
-  { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 100, min: 0, description: 'Age of death description' },
+  { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 120, min: 0, description: 'Age of death description' },
   { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', npCategory: false, max: 100, min: 0, description: 'RNA Integrity Description' },
-  { name: 'npfrotispre', variableName: 'Frozen tissue present', type: 'option', npCategory: true, optionType: 'radio', options: { Right: 1, Left: 2, NA: 3 }, description: 'Frozen Tissue Present Description' },
-  { name: 'npfix', variableName: 'Fixative', type: 'option', npCategory: true, optionType: 'radio', options: { Formalin: 1, Paraformaldehyde: 2, Other: 7 }, description: 'Fixative description' },
+  {
+    name: 'npfrotispre',
+    variableName: 'Frozen tissue present',
+    type: 'option',
+    npCategory: true,
+    optionType: 'radio',
+    options: { Right: 1, Left: 2, NA: 3 },
+    description: 'Frozen Tissue Present Description'
+  },
+  {
+    name: 'npfix',
+    variableName: 'Fixative',
+    type: 'option',
+    npCategory: true,
+    optionType: 'radio',
+    options: { Formalin: 1, Paraformaldehyde: 2, Other: 7 },
+    description: 'Fixative description'
+  },
   {
     name: 'npinf',
     variableName: 'Observed infarcts',
@@ -163,6 +178,6 @@ export const brainDataFilters: Filter[] = [
       Present: 3,
       'Missing/Unknown': 9
     },
-    description: "Hippocampal sclerosis description"
+    description: 'Hippocampal sclerosis description'
   }
 ];
