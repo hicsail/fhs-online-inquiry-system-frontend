@@ -39,9 +39,9 @@ export type Filter =
     };
 
 export const brainDataFilters: Filter[] = [
-  { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', npCategory: false, max: 160, min: 0, description: 'Postmortem Hours Description' },
-  { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 120, min: 0, description: 'Age of death description' },
-  { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', npCategory: false, max: 10, min: 0, description: 'RNA Integrity Description' },
+  { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', npCategory: false, max: 160, min: 0, description: 'Hours for Postmortem interval (PMI): time between death and brain removal' },
+  { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 120, min: 0, description: 'Age at death' },
+  { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', npCategory: false, max: 10, min: 0, description: 'RNA integrity number' },
   {
     name: 'npfrotispre',
     variableName: 'Frozen tissue present',
@@ -49,7 +49,7 @@ export const brainDataFilters: Filter[] = [
     npCategory: true,
     optionType: 'radio',
     options: { Right: 1, Left: 2, NA: 3 },
-    description: 'Frozen Tissue Present Description'
+    description: 'Frozen Tissue Present'
   },
   {
     name: 'npfix',
@@ -58,7 +58,7 @@ export const brainDataFilters: Filter[] = [
     npCategory: true,
     optionType: 'radio',
     options: { Formalin: 1, Paraformaldehyde: 2, Other: 7 },
-    description: 'Fixative description'
+    description: 'Fixative'
   },
   {
     name: 'npinf',
@@ -70,7 +70,7 @@ export const brainDataFilters: Filter[] = [
       No: 0,
       Yes: 1
     },
-    description: 'Observed Infarcts description'
+    description: 'Presence of old infarcts, observed grossly'
   },
   {
     name: 'npftdt7',
@@ -82,7 +82,7 @@ export const brainDataFilters: Filter[] = [
       No: 0,
       Yes: 1
     },
-    description: 'CTE description'
+    description: 'Chronic traumatic encephalopathy (CTE)'
   },
   {
     name: 'npavas',
@@ -98,7 +98,7 @@ export const brainDataFilters: Filter[] = [
       'Not Assessed': 8,
       'Missing/Unknown': 9
     },
-    description: 'Atherosclerosis severity description'
+    description: 'Presence and severity of atherosclerosis'
   },
   {
     name: 'pathmnd',
@@ -115,7 +115,7 @@ export const brainDataFilters: Filter[] = [
       'Not Assessed': 8,
       'Missing/Unknown': 9
     },
-    description: 'ALS description'
+    description: 'Neuropathological presence of ALS/Motor neuron disease'
   },
   {
     name: 'pathad',
@@ -127,7 +127,7 @@ export const brainDataFilters: Filter[] = [
       No: 0,
       Yes: 1
     },
-    description: 'Derived AD dementia description'
+    description: 'Neuropathological presence of Alzheimers disease'
   },
   {
     name: 'relatauo',
@@ -139,7 +139,7 @@ export const brainDataFilters: Filter[] = [
       No: 0,
       Yes: 1
     },
-    description: 'Age-related tauopathy'
+    description: 'Primary age-related tauopathy (PART; requires NFTs present with Braak stage <= IV, usually III or lower)'
   },
   {
     name: 'npftdtau',
@@ -151,7 +151,7 @@ export const brainDataFilters: Filter[] = [
       No: 0,
       Yes: 1
     },
-    description: 'FTLD pathology description'
+    description: 'FTLD with tau pathology (FTLD-tau) or other tauopathy'
   },
   {
     name: 'npftdtdp',
@@ -163,7 +163,7 @@ export const brainDataFilters: Filter[] = [
       No: 0,
       Yes: 1
     },
-    description: 'TDP-43 description'
+    description: 'FTLD with TDP-43 pathology (FTLD-TDP)'
   },
   {
     name: 'nphipscl',
@@ -178,6 +178,6 @@ export const brainDataFilters: Filter[] = [
       Present: 3,
       'Missing/Unknown': 9
     },
-    description: 'Hippocampal sclerosis description'
+    description: 'Hippocampal sclerosis (CA1 and/or subiculum'
   }
 ];
