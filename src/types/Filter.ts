@@ -39,7 +39,15 @@ export type Filter =
     };
 
 export const brainDataFilters: Filter[] = [
-  { name: 'nppmih_hours', variableName: 'Postmortem Interval (Hours)', type: 'slider', npCategory: false, max: 160, min: 0, description: 'Hours for Postmortem interval (PMI): time between death and brain removal' },
+  {
+    name: 'nppmih_hours',
+    variableName: 'Postmortem Interval (Hours)',
+    type: 'slider',
+    npCategory: false,
+    max: 160,
+    min: 0,
+    description: 'Hours for Postmortem interval (PMI): time between death and brain removal'
+  },
   { name: 'age_death', variableName: 'Age of Death', type: 'slider', npCategory: false, max: 120, min: 0, description: 'Age at death' },
   { name: 'nprin', variableName: 'RNA Integrity Number', type: 'slider', npCategory: false, max: 10, min: 0, description: 'RNA integrity number' },
   {
@@ -178,6 +186,6 @@ export const brainDataFilters: Filter[] = [
       Present: 3,
       'Missing/Unknown': 9
     },
-    description: 'Hippocampal sclerosis (CA1 and/or subiculum'
+    description: 'Hippocampal sclerosis (CA1 and/or subiculum)'
   }
 ];
