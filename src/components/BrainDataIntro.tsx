@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Link, Typography } from '@mui/material';
+import { Box, Divider, Link, Typography } from '@mui/material';
 import { FC, useState } from 'react';
 import { VideoPopup } from './VideoPopup';
 
