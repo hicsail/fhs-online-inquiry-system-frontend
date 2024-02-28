@@ -6,9 +6,16 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import InfoIcon from '@mui/icons-material/Info';
 import CallIcon from '@mui/icons-material/Call';
+import { useState } from 'react';
+import { VideoPopup } from '../components/VideoPopup';
 
 export function RootLayout() {
   const datasets = [{ displayedName: 'Brain Tissue', name: 'brain-tissue' }];
+
+  // video
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
     <>
@@ -49,7 +56,7 @@ export function RootLayout() {
               </ListItem>
             ))}
             <ListItem disablePadding>
-              <ListItemButton component={NavLink} to="#">
+              <ListItemButton onClick={handleOpen}>
                 <ListItemIcon>
                   <OndemandVideoIcon />
                 </ListItemIcon>
@@ -95,6 +102,7 @@ export function RootLayout() {
       >
         <Outlet />
       </Box>
+      <VideoPopup open={open} onClose={handleClose} />
     </>
   );
 }

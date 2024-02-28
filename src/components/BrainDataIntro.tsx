@@ -1,7 +1,13 @@
 import { Box, Divider, Link, Typography } from '@mui/material';
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { VideoPopup } from './VideoPopup';
 
 export const BrainDataIntro: FC = () => {
+  // video popup state
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <Box display={'flex'} flexDirection={'column'} bgcolor={'white'} textAlign={'left'} sx={{ minHeight: '25%', maxHeight: '50%', minWidth: '50%', maxWidth: '90%' }}>
       <Typography variant="h4" fontWeight="bold" fontSize={30}>
@@ -48,9 +54,14 @@ export const BrainDataIntro: FC = () => {
           <li key={6}>Data are available for download in CSV or JSON format using the respective button. Click "DISMISS" when done</li>
         </ol>
         <p>
-          Click <Link href="#">here</Link> for a step-by-step visual demonstration.
+          Click{' '}
+          <Link sx={{ cursor: 'pointer' }} onClick={handleOpen}>
+            here
+          </Link>{' '}
+          for a step-by-step visual demonstration.
         </p>
       </Typography>
+      <VideoPopup open={open} onClose={handleClose} />
     </Box>
   );
 };
